@@ -32,8 +32,10 @@ public final class Constants {
 
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds
-    public static final double kMaxSpeedMetersPerSecond = 4.8;
-    public static final double kMaxAngularSpeed = 2 * Math.PI; // radians per second
+    //public static final double kMaxSpeedMetersPerSecond = 4.8;
+    public static final double kMaxSpeedMetersPerSecond = 15;
+   // public static final double kMaxAngularSpeed = 2 * Math.PI; // radians per second
+    public static final double kMaxAngularSpeed = 12 * Math.PI; // radians per second // how fast robot turns
 
     public static final double kDirectionSlewRate = 1.2; // radians per second
     public static final double kMagnitudeSlewRate = 1.8; // percent per second (1 = 100%)
@@ -58,7 +60,7 @@ public final class Constants {
     public static final double kBackRightChassisAngularOffset = Math.PI / 2;
     */
 
-    public static final double kFrontLeftChassisAngularOffset = 5.271;
+    public static final double kFrontLeftChassisAngularOffset = 1.600 - (Math.PI/2);
     public static final double kFrontRightChassisAngularOffset = 4.260;
     public static final double kBackLeftChassisAngularOffset = 3.145;
     public static final double kBackRightChassisAngularOffset = 1.465;
@@ -140,10 +142,10 @@ public final class Constants {
   }
 
   public static final class AutoConstants {
-    public static final double kMaxSpeedMetersPerSecond = 3;
-    public static final double kMaxAccelerationMetersPerSecondSquared = 3;
+    public static final double kMaxSpeedMetersPerSecond = 3 ;
+    public static final double kMaxAccelerationMetersPerSecondSquared = 3  ;
     public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
-    public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
+    public static final double kMaxAngularSpeedRadiansPerSecondSquared =  Math.PI;
 
     public static final double kPXController = 1;
     public static final double kPYController = 1;
@@ -155,6 +157,6 @@ public final class Constants {
   }
 
   public static final class NeoMotorConstants {
-    public static final double kFreeSpeedRpm = 5676;
+    public static final double kFreeSpeedRpm = 7000; //5676
   }
 }
