@@ -56,7 +56,7 @@ public class RobotContainer {
 
     // Configure the button bindings
     configureButtonBindings();
-
+/* 
     m_liftSubsystem.setDefaultCommand(
 
         new RunCommand(
@@ -70,7 +70,8 @@ public class RobotContainer {
             m_liftSubsystem)
 
     );
-
+    */
+/* 
     //Works
     // Configure default commands
     m_robotDrive.setDefaultCommand(
@@ -83,9 +84,9 @@ public class RobotContainer {
                 -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
                 true, false),
             m_robotDrive));
-    
+    */
     //experimental
-    //m_robotDrive.setDefaultCommand(new DriveCommand(m_robotDrive, m_driverController));
+    m_robotDrive.setDefaultCommand(new DriveCommand(m_robotDrive, m_liftSubsystem, m_driverController, m_manipulatorController));
         /* 
 
             if (m_driverController.getAButton() == true)
