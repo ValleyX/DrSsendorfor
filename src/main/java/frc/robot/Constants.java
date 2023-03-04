@@ -25,11 +25,6 @@ import edu.wpi.first.math.util.Units;
  */
 public final class Constants {
   public static final class DriveConstants {
-    // convserion constants
-    
-
-
-
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds
     //public static final double kMaxSpeedMetersPerSecond = 4.8;
@@ -66,18 +61,21 @@ public final class Constants {
     public static final double kBackRightChassisAngularOffset = 1.465;
 
 
-    // Talon FX CAN IDs
-    public static final int kFrontLeftDrivingCanId = 0;
+    // Drivetrain Talon FX CAN IDs
+    public static final int kFrontLeftDrivingCanId = 17;
     public static final int kRearLeftDrivingCanId = 2;
     public static final int kFrontRightDrivingCanId = 6;
     public static final int kRearRightDrivingCanId = 4;
-    // SPARK MAX CAN IDs
+
+    // Drivetrain SPARK MAX CAN IDs
     public static final int kFrontLeftTurningCanId = 1;
     public static final int kRearLeftTurningCanId = 3;
     public static final int kFrontRightTurningCanId = 7;
     public static final int kRearRightTurningCanId = 5;
 
     public static final boolean kGyroReversed = false;
+
+
   }
 
   public static final class ModuleConstants {
@@ -136,9 +134,61 @@ public final class Constants {
     public static final int kTurningMotorCurrentLimit = 20; // amps
   }
 
+  public static final class LiftConstants {
+    // Lift Talon FX CAN IDs
+    public static final int kExtendorRightCanID = 10;
+    public static final int kExtendorLeftCanID = 11;
+
+    // Lift Talon SRX CAN IDs
+    public static final int kTopRoller = 12;
+    public static final int kBottomRoller = 13; 
+    
+    // Claw Talon SRX CAN IDs
+    public static final int kClawLeft = 14; 
+    public static final int kClawRight = 15;
+    public static final int kClawRotation = 16; 
+
+    // Digital input IDS
+    public static final int kLiftExtended = 0;
+    public static final int kLiftContracted = 1;
+
+    // Positions 
+    public static final int kClawRotationUP = 0000;
+    public static final int kClawRotationDOWN = 0000;
+
+    public static final int kPOIRotationDOWN = 180;
+    public static final int kPOIRotationUP = 0;
+
+    public static final int kExtendorPositionlow = 1;
+    public static final int kExtendorPositionmid = 8;
+    public static final int kExtendorPositionhigh = 0000;
+
+
+    public static final double LIFT_COUNTS_PER_MOTOR_REV = 2048;    //  AndyMark Motor Encoder
+    public static final double LIFT_DRIVE_GEAR_REDUCTION = 35;     // This is < 1.0 if geared UP
+    public static final double LIFT_ONE_MOTOR_COUNT = LIFT_COUNTS_PER_MOTOR_REV * LIFT_DRIVE_GEAR_REDUCTION;
+    public static final double LIFT_MOVEMENT_RATIO = 3;
+    public static final double LIFT_DIAMETER_OF_PULLEY = 1.3;
+    public static final double LIFT_Distance_in_one_rev = LIFT_DIAMETER_OF_PULLEY * Math.PI; //in
+    public static final double LIFT_COUNTS_PER_INCH = (LIFT_ONE_MOTOR_COUNT / LIFT_Distance_in_one_rev) / LIFT_MOVEMENT_RATIO;  //TODO determine// in class
+
+    public static final double kTimeoutMs = 100;
+
+    // LIFT PID
+    public static final double kLIFTP = 0.018;
+    public static final double kLIFTI = 0.000025;
+    public static final double kAllowableError = 200;
+
+  }
+
+
+
   public static final class OIConstants {
     public static final int kDriverControllerPort = 0;
     public static final double kDriveDeadband = 0.05;
+
+    public static final int KManipulatorControllerPort = 1;
+
   }
 
   public static final class AutoConstants {
