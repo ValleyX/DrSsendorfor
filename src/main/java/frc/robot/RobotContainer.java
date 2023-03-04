@@ -15,11 +15,16 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.LiftConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.commands.SequentialCommandGroupPlaybackBalance;
+import frc.robot.commands.SequentialCommandGroupPlaybackRecord;
 import frc.robot.commands.TelopCommand;
+import frc.robot.commands.TelopCommand.DriveType;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LiftModule;
 import frc.robot.subsystems.LiftSubsystem;
@@ -37,25 +42,38 @@ import java.util.List;
  * (including subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+  private final SequentialCommandGroupPlaybackRecord m_SeqCmdPlaybackLeft;
+  private final SequentialCommandGroupPlaybackRecord m_SeqCmdPlaybackRight;
+  private final SequentialCommandGroupPlaybackBalance m_SeqCmdPlaybackBalance;
+ // private final SequentialCommandGroupPlaybackRecord m_SeqCmdRecord;
+ // private final SequentialCommandGroupPlaybackRecord m_SeqCmdRecordBalance;
+
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final LiftSubsystem m_liftSubsystem = new LiftSubsystem();
 
   // The driver's controller
-  XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
-  XboxController m_manipulatorController = new XboxController(OIConstants.KManipulatorControllerPort);
 
+  SendableChooser<Command> m_chooser = new SendableChooser<>();
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
 
-    
-    LiftSubsystem.extendPosition requestedPostion = LiftSubsystem.extendPosition.low;
+    m_SeqCmdPlaybackLeft = new SequentialCommandGroupPlaybackRecord(DriveType.Playback, 15, "LeftRecord", m_robotDrive, m_liftSubsystem);
+    m_SeqCmdPlaybackRight = new SequentialCommandGroupPlaybackRecord(DriveType.Playback, 15, "RightRecord", m_robotDrive, m_liftSubsystem);
+    m_SeqCmdPlaybackBalance = new SequentialCommandGroupPlaybackBalance(DriveType.Playback, 13, "MiddleRecord", m_robotDrive, m_liftSubsystem);
+  
+    //rename this between runs for specific type
+  //  m_SeqCmdRecord = new SequentialCommandGroupPlaybackRecord(DriveType.Record, 15, "LeftRecord", m_robotDrive, m_liftSubsystem);
+  //  m_SeqCmdRecordBalance = new SequentialCommandGroupPlaybackRecord(DriveType.Record, 13, "MiddleRecord", m_robotDrive, m_liftSubsystem);
+ 
+
+    //LiftSubsystem.extendPosition requestedPostion = LiftSubsystem.extendPosition.low;
 
 
     // Configure the button bindings
-    configureButtonBindings();
+   // configureButtonBindings();
 /* 
     m_liftSubsystem.setDefaultCommand(
 
@@ -86,20 +104,19 @@ public class RobotContainer {
             m_robotDrive));
     */
     //experimental
-    m_robotDrive.setDefaultCommand(new TelopCommand(m_robotDrive, m_liftSubsystem, m_driverController, m_manipulatorController));
-        /* 
+    //Only runs this when in telop mode
+    m_robotDrive.setDefaultCommand(new TelopCommand(DriveType.Telop, 0, "",  m_robotDrive, m_liftSubsystem));
+   // m_robotDrive.setDefaultCommand(new TelopCommand(DriveType.Record, 15, "LeftRecord",  m_robotDrive, m_liftSubsystem));
+        
+    
+    //chooser run in auto mode
+    m_chooser.setDefaultOption("Left", m_SeqCmdPlaybackLeft);
+    m_chooser.addOption("Right",       m_SeqCmdPlaybackRight);
+    m_chooser.addOption("Banlace",       m_SeqCmdPlaybackBalance);
+    //m_chooser.addOption("Record Full 15 secs",  m_SeqCmdRecord);
+    //m_chooser.addOption("Record 13 secs",  m_SeqCmdRecordBalance);
 
-            if (m_driverController.getAButton() == true)
-            {
-                requestedPostion = extendPosition.low;
-            }
-
-            else if (m_driverController.getBButton() == true){
-                requestedPostion = extendPosition.mid;
-            }
-
-            else if (m_driverController.getButton)
-            */
+    SmartDashboard.putData("Auto Mode", m_chooser);
   }
 
   /**
@@ -111,12 +128,15 @@ public class RobotContainer {
    * passing it to a
    * {@link JoystickButton}.
    */
+  /* 
   private void configureButtonBindings() {
     new JoystickButton(m_driverController, Button.kR1.value)
         .whileTrue(new RunCommand(
             () -> m_robotDrive.setX(),
             m_robotDrive));
+            
   }
+  */
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -124,43 +144,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // Create config for trajectory
-    TrajectoryConfig config = new TrajectoryConfig(
-        AutoConstants.kMaxSpeedMetersPerSecond,
-        AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-        // Add kinematics to ensure max speed is actually obeyed
-        .setKinematics(DriveConstants.kDriveKinematics);
-
-    // An example trajectory to follow. All units in meters.
-    Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
-        // Start at the origin facing the +X direction
-        new Pose2d(0, 0, new Rotation2d(0)),
-        // Pass through these two interior waypoints, making an 's' curve path
-        List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
-        // End 3 meters straight ahead of where we started, facing forward
-        new Pose2d(3, 0, new Rotation2d(0)),
-        config);
-
-    var thetaController = new ProfiledPIDController(
-        AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
-    thetaController.enableContinuousInput(-Math.PI, Math.PI);
-
-    SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
-        exampleTrajectory,
-        m_robotDrive::getPose, // Functional interface to feed supplier
-        DriveConstants.kDriveKinematics,
-
-        // Position controllers
-        new PIDController(AutoConstants.kPXController, 0, 0),
-        new PIDController(AutoConstants.kPYController, 0, 0),
-        thetaController,
-        m_robotDrive::setModuleStates,
-        m_robotDrive);
-
-    // Reset odometry to the starting pose of the trajectory.
-    m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose());
-
-    // Run path following command, then stop at the end.
-    return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false, false));
+    return m_chooser.getSelected();
   }
 }

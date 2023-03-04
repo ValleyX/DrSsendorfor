@@ -10,17 +10,23 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.CAN;
 import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.ColorMatch;
+import com.revrobotics.ColorMatchResult;
+import com.revrobotics.ColorSensorV3;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.AbsoluteEncoder;
 
 import frc.robot.Constants;
+import frc.robot.Constants.ColorConstants;
 import frc.robot.Constants.LiftConstants;
 import frc.robot.Constants.ModuleConstants;
+import frc.robot.Constants.ColorConstants;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -29,7 +35,12 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
+
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.I2C;
+
+import com.ctre.phoenix.sensors.CANCoder;
 
 
 public class LiftModule extends SubsystemBase {
@@ -153,6 +164,77 @@ public class LiftModule extends SubsystemBase {
     return m_liftContracted;
   }
 */
-
   
 }
+
+/* 
+class ClawModule extends SubsystemBase {
+
+  private final TalonSRX m_clawLeft;
+  private final TalonSRX m_clawRight;
+  private final TalonSRX m_clawRotation;
+
+  private final CANCoder m_wristEncoder;
+
+  private final DigitalInput m_coneDetector;
+  private final ColorSensorV3 m_boxDetector; 
+  private final ColorMatch m_colorMatch;
+
+
+
+  public ClawModule(int clawLeftID, int clawRightID,int clawRotationID, int wristID, int coneDetectorID ) {
+
+    m_clawLeft = new TalonSRX(clawLeftID);
+    m_clawRight = new TalonSRX(clawRightID);
+    m_clawRotation = new TalonSRX(clawRotationID);
+
+    m_wristEncoder = new CANCoder(wristID);
+
+    m_clawLeft.setInverted(false);
+    m_clawRight.setInverted(true);
+    m_clawRotation.setInverted(false);
+
+    m_clawLeft.setNeutralMode(NeutralMode.Brake);
+    m_clawRight.setNeutralMode(NeutralMode.Brake);
+    m_clawRotation.setNeutralMode(NeutralMode.Brake);
+
+    m_coneDetector = new DigitalInput(coneDetectorID);
+    addChild("ConeDectionBeam", m_coneDetector);
+
+    m_boxDetector = new ColorSensorV3(I2C.Port.kOnboard);
+    m_colorMatch = new ColorMatch();
+    m_colorMatch.addColorMatch(ColorConstants.kPurpleTarget);
+
+
+
+  }
+
+  public void intakeIn() {
+
+    ColorMatchResult match = m_colorMatch.matchClosestColor(m_boxDetector.getColor());
+
+   boolean m_coneDetectionBeam = m_coneDetector.get();
+
+
+    if (match.color != ColorConstants.kPurpleTarget || m_coneDetectionBeam == false )
+    {
+      m_clawLeft.set(ControlMode.PercentOutput, 1);
+      m_clawRight.set(ControlMode.PercentOutput, 1);
+    }
+
+    else
+    {
+      m_clawLeft.set(ControlMode.PercentOutput, 0);
+      m_clawRight.set(ControlMode.PercentOutput, 0);
+    }
+
+  }
+
+  public void intakeOut() {
+
+  }
+
+}
+*/
+
+

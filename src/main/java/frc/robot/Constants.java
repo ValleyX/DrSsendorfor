@@ -10,6 +10,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.util.Color;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -55,10 +56,17 @@ public final class Constants {
     public static final double kBackRightChassisAngularOffset = Math.PI / 2;
     */
 
+    /**
+     * to find the offset open the "REV Hardware Client" application and plug in computer to the Power Distribution hub
+     * then look at the SparkMAX absolute encoder that is related to the turn motor that you want to offset
+     * square the wheel using provided bracket 
+     * if the bracket alligned wheel is facing forward write the number of the absolute value here
+     * if the bracket allignedd wheel is facing left, write the number of the absolute value but minus PI/2 off
+     */
     public static final double kFrontLeftChassisAngularOffset = 1.600 - (Math.PI/2);
     public static final double kFrontRightChassisAngularOffset = 4.260;
     public static final double kBackLeftChassisAngularOffset = 3.145;
-    public static final double kBackRightChassisAngularOffset = 1.465;
+    public static final double kBackRightChassisAngularOffset = 5.922 - (Math.PI/2);
 
 
     // Drivetrain Talon FX CAN IDs
@@ -153,8 +161,8 @@ public final class Constants {
     public static final int kLiftContracted = 1;
 
     // Positions 
-    public static final int kClawRotationUP = 0000;
-    public static final int kClawRotationDOWN = 0000;
+    public static final int kWristIntakePOS = 0000;
+    public static final int kWristOutakePOS = 0000;
 
     public static final int kPOIRotationDOWN = 180;
     public static final int kPOIRotationUP = 0;
@@ -178,6 +186,12 @@ public final class Constants {
     public static final double kLIFTP = 0.018;
     public static final double kLIFTI = 0.000025;
     public static final double kAllowableError = 200;
+
+  }
+
+  public static final class ColorConstants {
+
+    public final static Color kPurpleTarget = new Color(0.62, 0.12, 0.95);
 
   }
 
