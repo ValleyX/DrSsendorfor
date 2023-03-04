@@ -19,7 +19,7 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.LiftConstants;
 import frc.robot.Constants.OIConstants;
-import frc.robot.commands.DriveCommand;
+import frc.robot.commands.TelopCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LiftModule;
 import frc.robot.subsystems.LiftSubsystem;
@@ -86,7 +86,7 @@ public class RobotContainer {
             m_robotDrive));
     */
     //experimental
-    m_robotDrive.setDefaultCommand(new DriveCommand(m_robotDrive, m_liftSubsystem, m_driverController, m_manipulatorController));
+    m_robotDrive.setDefaultCommand(new TelopCommand(m_robotDrive, m_liftSubsystem, m_driverController, m_manipulatorController));
         /* 
 
             if (m_driverController.getAButton() == true)
