@@ -33,9 +33,7 @@ public enum extendPosition
 }
 
 
-private final LiftModule m_liftModule = new LiftModule(LiftConstants.kExtendorRightCanID, LiftConstants.kExtendorLeftCanID, LiftConstants.kTopRoller,
-LiftConstants.kBottomRoller, LiftConstants.kClawLeft, LiftConstants.kClawRight, LiftConstants.kClawRotation, LiftConstants.kLiftExtended,
-LiftConstants.kLiftContracted);
+public final LiftModule m_liftModule = new LiftModule(LiftConstants.kExtendorRightCanID, LiftConstants.kExtendorLeftCanID);
 
   @Override
   public void periodic() {
@@ -43,15 +41,13 @@ LiftConstants.kLiftContracted);
       }
 
 
-  public void liftDrive(double extendorSpeed, int rotDOWN, int rotUP, boolean extendHigh, boolean extendMid, boolean extendLow) {
+  public void liftDrive(double extendorSpeed, boolean extendHigh, boolean extendMid, boolean extendLow, boolean extendRest) {
     
-    extendorSpeed = 0.1;
     SmartDashboard.putNumber("XSpeed", extendorSpeed);
 
-    //m_liftModule.getExtendorRight().set(extendorSpeed); 
-    //m_liftModule.getExtendorLeft().set(extendorSpeed);
-
     SmartDashboard.putNumber("current Position", m_liftModule.getExtendorRight().getSelectedSensorPosition());
+
+
     if (extendLow)
     {
       //SetPercentOutput(extendorSpeed, LiftConstants.kTimeoutMs);
@@ -76,41 +72,48 @@ LiftConstants.kLiftContracted);
       SmartDashboard.putString("ButtonPress", "extendMid");
   
     }
-    else
+    else if (extendHigh)
     {
-      SmartDashboard.putString("ButtonPress", "None");
-    }
-    
-/* 
-    switch (heightOfLift) {
-      case low: 
 
-      break;
-
-      case mid:
-
-      break;
-
-      case high:
-    }
-    */
-/* 
-    if(rotDOWN)
-    {
-    m_liftModule.getClawRotation().set(ControlMode.Position, LiftConstants.kClawRotationDOWN);
-    }
-
-    if (rotUP)
-    {
-    m_liftModule.getClawRotation().set(ControlMode.Position, LiftConstants.kClawRotationUP);
-    }
-*/
-    
-
-
-  }
+      double targetPositionRotationsRight = (LiftConstants.LIFT_COUNTS_PER_INCH * LiftConstants.kExtendorPositionhigh);
+      SmartDashboard.putNumber("target Position", targetPositionRotationsRight);
+      m_liftModule.getExtendorRight().set(ControlMode.Position, targetPositionRotationsRight);
+      SmartDashboard.putString("ButtonPress", "extendMid");
   
+    }
 
+    else if (extendRest)
+    {
+      double targetPositionRotationsRight = (LiftConstants.LIFT_COUNTS_PER_INCH * LiftConstants.kExtendorPositionReset);
+      SmartDashboard.putNumber("target Position", targetPositionRotationsRight);
+      m_liftModule.getExtendorRight().set(ControlMode.Position, targetPositionRotationsRight);
+      SmartDashboard.putString("ButtonPress", "extendMid");
+    }
+    
+    else 
+    {
+      
+      double liftYstick = -extendorSpeed;
 
+      if (liftYstick >= 0.3)
+      {
+        liftYstick = 0.3;
+      }
+
+      else if (liftYstick <= -0.3)
+      {
+        liftYstick = -0.3;
+      }
+
+      else if (Math.abs(liftYstick) < 0.1)
+      {
+        liftYstick = 0;
+      }
+
+      m_liftModule.getExtendorRight().set(ControlMode.PercentOutput, liftYstick);
+
+    }
+    
+  }
 
 }

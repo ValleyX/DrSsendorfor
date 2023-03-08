@@ -25,6 +25,7 @@ import frc.robot.commands.SequentialCommandGroupPlaybackBalance;
 import frc.robot.commands.SequentialCommandGroupPlaybackRecord;
 import frc.robot.commands.TelopCommand;
 import frc.robot.commands.TelopCommand.DriveType;
+import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LiftModule;
 import frc.robot.subsystems.LiftSubsystem;
@@ -51,6 +52,7 @@ public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final LiftSubsystem m_liftSubsystem = new LiftSubsystem();
+  private final ClawSubsystem m_ClawSubsystem = new ClawSubsystem();
 
   // The driver's controller
 
@@ -60,9 +62,9 @@ public class RobotContainer {
    */
   public RobotContainer() {
 
-    m_SeqCmdPlaybackLeft = new SequentialCommandGroupPlaybackRecord(DriveType.Playback, 15, "LeftRecord", m_robotDrive, m_liftSubsystem);
-    m_SeqCmdPlaybackRight = new SequentialCommandGroupPlaybackRecord(DriveType.Playback, 15, "RightRecord", m_robotDrive, m_liftSubsystem);
-    m_SeqCmdPlaybackBalance = new SequentialCommandGroupPlaybackBalance(DriveType.Playback, 13, "MiddleRecord", m_robotDrive, m_liftSubsystem);
+    m_SeqCmdPlaybackLeft = new SequentialCommandGroupPlaybackRecord(DriveType.Playback, 15, "LeftRecord", m_robotDrive, m_liftSubsystem, m_ClawSubsystem);
+    m_SeqCmdPlaybackRight = new SequentialCommandGroupPlaybackRecord(DriveType.Playback, 15, "RightRecord", m_robotDrive, m_liftSubsystem, m_ClawSubsystem);
+    m_SeqCmdPlaybackBalance = new SequentialCommandGroupPlaybackBalance(DriveType.Playback, 13, "MiddleRecord", m_robotDrive, m_liftSubsystem, m_ClawSubsystem);
   
     //rename this between runs for specific type
   //  m_SeqCmdRecord = new SequentialCommandGroupPlaybackRecord(DriveType.Record, 15, "LeftRecord", m_robotDrive, m_liftSubsystem);
@@ -105,7 +107,7 @@ public class RobotContainer {
     */
     //experimental
     //Only runs this when in telop mode
-    m_robotDrive.setDefaultCommand(new TelopCommand(DriveType.Telop, 0, "",  m_robotDrive, m_liftSubsystem));
+    m_robotDrive.setDefaultCommand(new TelopCommand(DriveType.Telop, 0, "",  m_robotDrive, m_liftSubsystem, m_ClawSubsystem));
    // m_robotDrive.setDefaultCommand(new TelopCommand(DriveType.Record, 15, "LeftRecord",  m_robotDrive, m_liftSubsystem));
         
     
@@ -145,5 +147,13 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     return m_chooser.getSelected();
+  }
+
+  public DriveSubsystem getDriveSystem(){
+    return m_robotDrive;
+  }
+
+  public LiftSubsystem getLiftSystem(){
+    return m_liftSubsystem;
   }
 }

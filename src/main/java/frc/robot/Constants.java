@@ -70,16 +70,16 @@ public final class Constants {
 
 
     // Drivetrain Talon FX CAN IDs
-    public static final int kFrontLeftDrivingCanId = 17;
-    public static final int kRearLeftDrivingCanId = 2;
-    public static final int kFrontRightDrivingCanId = 6;
-    public static final int kRearRightDrivingCanId = 4;
+    public static final int kFrontLeftDrivingCanId = 5;
+    public static final int kRearLeftDrivingCanId = 6;
+    public static final int kFrontRightDrivingCanId = 8;
+    public static final int kRearRightDrivingCanId = 7;
 
     // Drivetrain SPARK MAX CAN IDs
     public static final int kFrontLeftTurningCanId = 1;
-    public static final int kRearLeftTurningCanId = 3;
-    public static final int kFrontRightTurningCanId = 7;
-    public static final int kRearRightTurningCanId = 5;
+    public static final int kRearLeftTurningCanId = 2;
+    public static final int kFrontRightTurningCanId = 4;
+    public static final int kRearRightTurningCanId = 3;
 
     public static final boolean kGyroReversed = false;
 
@@ -148,17 +148,19 @@ public final class Constants {
     public static final int kExtendorLeftCanID = 11;
 
     // Lift Talon SRX CAN IDs
-    public static final int kTopRoller = 12;
-    public static final int kBottomRoller = 13; 
+    public static final int kTopRollerID = 12;
+    public static final int kBottomRollerID = 13; 
     
     // Claw Talon SRX CAN IDs
-    public static final int kClawLeft = 14; 
-    public static final int kClawRight = 15;
-    public static final int kClawRotation = 16; 
+    public static final int kClawLeftID = 14; 
+    public static final int kClawRightID = 15;
+    public static final int kClawRotationID = 16; 
+
+    //Claw CANCoderID
+    public static final int kWristID = 19; //cancoder
 
     // Digital input IDS
-    public static final int kLiftExtended = 0;
-    public static final int kLiftContracted = 1;
+    public static final int kConeDetector = 0; //TODO still needs to be determined
 
     // Positions 
     public static final int kWristIntakePOS = 0000;
@@ -167,9 +169,14 @@ public final class Constants {
     public static final int kPOIRotationDOWN = 180;
     public static final int kPOIRotationUP = 0;
 
-    public static final int kExtendorPositionlow = 1;
-    public static final int kExtendorPositionmid = 8;
-    public static final int kExtendorPositionhigh = 0000;
+    public static final int kExtendorPositionReset = 0;
+    public static final int kExtendorPositionlow = 4; 
+    public static final int kExtendorPositionmid = 32; //65
+    public static final int kExtendorPositionhigh = 53; //106
+
+    public static final double kintakeSpeed = 0.5;
+    public static final double kexpellSpeed = -0.5;
+
 
 
     public static final double LIFT_COUNTS_PER_MOTOR_REV = 2048;    //  AndyMark Motor Encoder
@@ -191,8 +198,16 @@ public final class Constants {
 
   public static final class ColorConstants {
 
-    public final static Color kPurpleTarget = new Color(0.62, 0.12, 0.95);
+    public final static Color kPurpleTarget = new Color(0.211, 0.332, 0.456);
+    public final static double colorConfidenceTreshold = 0.94;
 
+  }
+
+  public static final class ClawConstants {
+    public final static double kClawP = 0.015;
+    public final static double kClawD = 0;
+    public final static double kClawI = 0;
+    public final static double allowableClawError = 6;
   }
 
 

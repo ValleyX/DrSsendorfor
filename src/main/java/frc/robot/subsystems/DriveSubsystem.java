@@ -4,7 +4,9 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.sensors.Pigeon2;
+import com.ctre.phoenix.sensors.WPI_Pigeon2;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -266,6 +268,20 @@ public class DriveSubsystem extends SubsystemBase {
   public double getHeading() {
     //return Rotation2d.fromDegrees(m_gyro.getAngle()).getDegrees();
     return Rotation2d.fromDegrees(m_gyro.getYaw()).getDegrees();
+  }
+
+  public Pigeon2 getImu()
+  {
+    return m_gyro;
+  }
+
+  public void setCoast(){
+    m_frontLeft.getDriveMotor().setNeutralMode(NeutralMode.Coast);
+    m_frontRight.getDriveMotor().setNeutralMode(NeutralMode.Coast);
+    m_rearLeft.getDriveMotor().setNeutralMode(NeutralMode.Coast);
+    m_rearRight.getDriveMotor().setNeutralMode(NeutralMode.Coast);
+
+
   }
 
   /**

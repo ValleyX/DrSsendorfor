@@ -14,6 +14,9 @@ public class JoyStorage implements Serializable {
         public boolean buttonY; // lift to high
         public boolean buttonX; //lift  reset 
 
+        public boolean bumperLeftExpell;
+        public boolean bumperRightIntake;
+
 
 
     public JoyStorage() {
@@ -27,7 +30,9 @@ public class JoyStorage implements Serializable {
         boolean buttonA,
         boolean buttonB,
         boolean buttonY,
-        boolean buttonX) {
+        boolean buttonX,
+        boolean bumperLeftExpell,
+        boolean bumperRightIntake) {
         this.leftdriveYstick = leftdriveYstick;
         this.leftdriveXStick = leftdriveXStick;
         this.rightdriveXstick = rightdriveXstick;
@@ -36,6 +41,8 @@ public class JoyStorage implements Serializable {
         this.buttonB = buttonB;
         this.buttonY = buttonY;
         this.buttonX = buttonX;
+        this.bumperLeftExpell = bumperLeftExpell;
+        this.bumperRightIntake = bumperRightIntake;
 
     }
 

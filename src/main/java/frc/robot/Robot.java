@@ -4,11 +4,18 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants;
+import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.LiftModule;
+import frc.robot.subsystems.LiftSubsystem;
 import frc.robot.subsystems.MAXSwerveModule;
 
 /**
@@ -21,9 +28,10 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
-  
-  private MAXSwerveModule m_MaxSwerveModule;
 
+  private final XboxController m_manipulatorController = new XboxController(1);
+
+  
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -104,6 +112,29 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {
+
+    
+    m_robotContainer.getDriveSystem().setCoast();
+
+    double liftYstick = -m_manipulatorController.getLeftY();
+
+    if (liftYstick >= 0.5)
+    {
+      liftYstick = 0.5;
+    }
+
+    else if (liftYstick <= -0.5)
+    {
+      liftYstick = -0.5;
+    }
+
+    m_robotContainer.getLiftSystem().m_liftModule.getExtendorRight().setInverted(false);
+    m_robotContainer.getLiftSystem().m_liftModule.getExtendorLeft().setInverted(true);
+
+    m_robotContainer.getLiftSystem().m_liftModule.getExtendorLeft().follow(m_robotContainer.getLiftSystem().m_liftModule.getExtendorRight());
+    m_robotContainer.getLiftSystem().m_liftModule.getExtendorRight().set(ControlMode.PercentOutput, liftYstick);
+
+    //m_robotContainer.getLiftSystem().liftDrive(m_manipulatorController.getLeftY(), 0, 0, isDisabled(), isAutonomousEnabled(), isAutonomous());
     //SmartDashboard.putNumber("absolute postion of " + m_MaxSwerveModule.getTurnMotor().getDeviceId() , m_MaxSwerveModule.); 
 
 

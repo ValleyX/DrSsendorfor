@@ -62,8 +62,8 @@ public class LiftModule extends SubsystemBase {
   */
 
 
-  public LiftModule(int extendorRight, int extendorLeft, int topRoller,int bottomRoller,int clawLeft,
-  int clawRight,int clawRotation, int liftExtended, int liftContracted ) {
+  public LiftModule(int extendorRight, int extendorLeft) 
+  {
 
  
 
@@ -166,75 +166,3 @@ public class LiftModule extends SubsystemBase {
 */
   
 }
-
-/* 
-class ClawModule extends SubsystemBase {
-
-  private final TalonSRX m_clawLeft;
-  private final TalonSRX m_clawRight;
-  private final TalonSRX m_clawRotation;
-
-  private final CANCoder m_wristEncoder;
-
-  private final DigitalInput m_coneDetector;
-  private final ColorSensorV3 m_boxDetector; 
-  private final ColorMatch m_colorMatch;
-
-
-
-  public ClawModule(int clawLeftID, int clawRightID,int clawRotationID, int wristID, int coneDetectorID ) {
-
-    m_clawLeft = new TalonSRX(clawLeftID);
-    m_clawRight = new TalonSRX(clawRightID);
-    m_clawRotation = new TalonSRX(clawRotationID);
-
-    m_wristEncoder = new CANCoder(wristID);
-
-    m_clawLeft.setInverted(false);
-    m_clawRight.setInverted(true);
-    m_clawRotation.setInverted(false);
-
-    m_clawLeft.setNeutralMode(NeutralMode.Brake);
-    m_clawRight.setNeutralMode(NeutralMode.Brake);
-    m_clawRotation.setNeutralMode(NeutralMode.Brake);
-
-    m_coneDetector = new DigitalInput(coneDetectorID);
-    addChild("ConeDectionBeam", m_coneDetector);
-
-    m_boxDetector = new ColorSensorV3(I2C.Port.kOnboard);
-    m_colorMatch = new ColorMatch();
-    m_colorMatch.addColorMatch(ColorConstants.kPurpleTarget);
-
-
-
-  }
-
-  public void intakeIn() {
-
-    ColorMatchResult match = m_colorMatch.matchClosestColor(m_boxDetector.getColor());
-
-   boolean m_coneDetectionBeam = m_coneDetector.get();
-
-
-    if (match.color != ColorConstants.kPurpleTarget || m_coneDetectionBeam == false )
-    {
-      m_clawLeft.set(ControlMode.PercentOutput, 1);
-      m_clawRight.set(ControlMode.PercentOutput, 1);
-    }
-
-    else
-    {
-      m_clawLeft.set(ControlMode.PercentOutput, 0);
-      m_clawRight.set(ControlMode.PercentOutput, 0);
-    }
-
-  }
-
-  public void intakeOut() {
-
-  }
-
-}
-*/
-
-
