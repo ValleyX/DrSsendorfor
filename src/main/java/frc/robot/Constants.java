@@ -29,7 +29,7 @@ public final class Constants {
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds
     //public static final double kMaxSpeedMetersPerSecond = 4.8;
-    public static final double kMaxSpeedMetersPerSecond = 15;
+    public static final double kMaxSpeedMetersPerSecond = 20;
    // public static final double kMaxAngularSpeed = 2 * Math.PI; // radians per second
     public static final double kMaxAngularSpeed = 12 * Math.PI; // radians per second // how fast robot turns
 
@@ -66,7 +66,7 @@ public final class Constants {
     public static final double kFrontLeftChassisAngularOffset = 1.600 - (Math.PI/2);
     public static final double kFrontRightChassisAngularOffset = 4.260;
     public static final double kBackLeftChassisAngularOffset = 3.145;
-    public static final double kBackRightChassisAngularOffset = 5.922 - (Math.PI/2);
+    public static final double kBackRightChassisAngularOffset = 5.922 + (Math.PI/2);
 
 
     // Drivetrain Talon FX CAN IDs
@@ -160,11 +160,11 @@ public final class Constants {
     public static final int kWristID = 19; //cancoder
 
     // Digital input IDS
-    public static final int kConeDetector = 0; //TODO still needs to be determined
+    public static final int kConeDetector = 1;
 
     // Positions 
-    public static final int kWristIntakePOS = 0000;
-    public static final int kWristOutakePOS = 0000;
+    public static final int kWristToIntakePOS = 0;
+    public static final double kWristToScorePOS = 52 * (4096/360);
 
     public static final int kPOIRotationDOWN = 180;
     public static final int kPOIRotationUP = 0;
@@ -204,10 +204,10 @@ public final class Constants {
   }
 
   public static final class ClawConstants {
-    public final static double kClawP = 0.015;
+    public final static double kClawP = 0.8;
     public final static double kClawD = 0;
-    public final static double kClawI = 0;
-    public final static double allowableClawError = 6;
+    public final static double kClawI = 0.0008;
+    public final static double allowableClawError = 0;
   }
 
 

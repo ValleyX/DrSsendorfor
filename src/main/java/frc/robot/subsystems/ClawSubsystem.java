@@ -47,6 +47,9 @@ public final ClawModule m_ClawModule = new ClawModule(LiftConstants.kClawLeftID,
   @Override
   public void periodic() 
   {
+
+   // SmartDashboard.putBoolean("is Cone Beam Broken? = ",  m_ClawModule.getconeDetector().get());
+    /* 
     ColorMatchResult match = m_ClawModule.getcolorMatch().matchClosestColor(m_ClawModule.getboxDetector().getColor());
 
       SmartDashboard.putNumber("color blue test: " , m_ClawModule.getboxDetector().getColor().blue);
@@ -62,12 +65,14 @@ public final ClawModule m_ClawModule = new ClawModule(LiftConstants.kClawLeftID,
 
 
       SmartDashboard.putNumber("wrist absolute angle : ", m_ClawModule.getwristEncoder().getAbsolutePosition());
-    
+    */
   }
 
 
   public void ClawDrive(boolean intakein, boolean expell)  
   {  
+
+    
     if (intakein == true)
     {
       intakeIn();
@@ -75,14 +80,14 @@ public final ClawModule m_ClawModule = new ClawModule(LiftConstants.kClawLeftID,
 
     else if (expell == true)
     {
-      intakeOut();
+        intakeOut(); 
     }
 
     else 
     {
+      intakeOff();
 
     }
-    
 
 
   }
@@ -100,26 +105,25 @@ public final ClawModule m_ClawModule = new ClawModule(LiftConstants.kClawLeftID,
   
       if (match.color != ColorConstants.kPurpleTarget || m_coneDetectionBeam == false || match.confidence <= ColorConstants.colorConfidenceTreshold )
       {
-        /*intaking
+        //intaking
        m_ClawModule.getclawLeft().set(ControlMode.PercentOutput, LiftConstants.kintakeSpeed);
        m_ClawModule.getclawRight().set(ControlMode.PercentOutput, LiftConstants.kintakeSpeed);
         
        m_ClawModule.gettopRoller().set(ControlMode.PercentOutput, LiftConstants.kintakeSpeed);
        m_ClawModule.getbottomRoller().set(ControlMode.PercentOutput, LiftConstants.kintakeSpeed);
-*/
        m_currentStoredObject = intakestorage.nothing;
 
       }
   
       else
       {
-        /*intook
+        //intook
         m_ClawModule.getclawLeft().set(ControlMode.PercentOutput, 0);
         m_ClawModule.getclawRight().set(ControlMode.PercentOutput, 0);
   
         m_ClawModule.gettopRoller().set(ControlMode.PercentOutput, 0);
         m_ClawModule.getbottomRoller().set(ControlMode.PercentOutput, 0);
-*/
+
         if ( m_coneDetectionBeam == true)
         {
           m_currentStoredObject = intakestorage.cone;
@@ -135,27 +139,38 @@ public final ClawModule m_ClawModule = new ClawModule(LiftConstants.kClawLeftID,
 
     public void intakeOut() 
     {
-  /* 
+  
       m_ClawModule.getclawLeft().set(ControlMode.PercentOutput, LiftConstants.kexpellSpeed);
       m_ClawModule.getclawRight().set(ControlMode.PercentOutput, LiftConstants.kexpellSpeed);
 
       m_ClawModule.gettopRoller().set(ControlMode.PercentOutput, LiftConstants.kexpellSpeed);
       m_ClawModule.getbottomRoller().set(ControlMode.PercentOutput, LiftConstants.kexpellSpeed);
-*/
+
       m_currentStoredObject = intakestorage.nothing;
   
+    }
+
+    public void intakeOff()
+    {
+        
+      m_ClawModule.getclawLeft().set(ControlMode.PercentOutput, 0);
+      m_ClawModule.getclawRight().set(ControlMode.PercentOutput, 0);
+
+      m_ClawModule.gettopRoller().set(ControlMode.PercentOutput, 0);
+      m_ClawModule.getbottomRoller().set(ControlMode.PercentOutput, 0);
+
     }
   
     public void clawToScore()
     {
-  
+        m_ClawModule.getclawRotation().setSelectedSensorPosition(LiftConstants.kWristToScorePOS);
     
     }
   
     public void clawToIntake()
     {
-  
-  
+      m_ClawModule.getclawRotation().setSelectedSensorPosition(LiftConstants.kWristToIntakePOS);
+      
     }
 
 

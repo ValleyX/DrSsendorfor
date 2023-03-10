@@ -68,9 +68,11 @@ public class ClawModule extends SubsystemBase {
     m_topRoller = new TalonSRX(topRollerID);
     m_bottomRoller = new TalonSRX(bottomRollerID);
 
-
+    //Josh E REVIEW THESE LINES
     m_wristEncoder = new CANCoder(wristID);
     m_clawRotation = new TalonSRX(clawRotationID);
+
+    m_wristEncoder.setPosition(0);
 
     m_clawRotation.config_kP(0,ClawConstants.kClawP);
     m_clawRotation.config_kI(0, ClawConstants.kClawI);
@@ -78,14 +80,14 @@ public class ClawModule extends SubsystemBase {
 
     m_clawRotation.configAllowableClosedloopError(0, ClawConstants.allowableClawError);
     m_clawRotation.configRemoteFeedbackFilter(m_wristEncoder, 0);
-    
+    //Josh E REVIEW THESE LINES
 
-    m_clawLeft.setInverted(false);
-    m_clawRight.setInverted(true);
+    m_clawLeft.setInverted(true);
+    m_clawRight.setInverted(false);
     m_clawRotation.setInverted(false);
 
     m_topRoller.setInverted(false);
-    m_bottomRoller.setInverted(false);
+    m_bottomRoller.setInverted(true);
 
     m_clawLeft.setNeutralMode(NeutralMode.Brake);
     m_clawRight.setNeutralMode(NeutralMode.Brake);
