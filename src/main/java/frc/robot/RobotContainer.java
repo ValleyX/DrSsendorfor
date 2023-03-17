@@ -51,8 +51,9 @@ public class RobotContainer {
 
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
-  private final LiftSubsystem m_liftSubsystem = new LiftSubsystem();
   private final ClawSubsystem m_ClawSubsystem = new ClawSubsystem();
+  private final LiftSubsystem m_liftSubsystem = new LiftSubsystem(m_ClawSubsystem);
+  
 
   // The driver's controller
 

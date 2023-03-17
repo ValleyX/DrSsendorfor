@@ -156,26 +156,42 @@ public final class Constants {
     public static final int kClawRightID = 15;
     public static final int kClawRotationID = 16; 
 
+    //Pneumatic IDs
+    public static final int kPneumaticCANID = 18;
+    public static final int kPneumaticPort = 8;
+
     //Claw CANCoderID
     public static final int kWristID = 19; //cancoder
 
     // Digital input IDS
     public static final int kConeDetector = 1;
+    public static final int kLiftLimitSwitchLeft = 2;
+    public static final int kLiftLimitSwitchRight = 3;
 
-    // Positions 
-    public static final int kWristToIntakePOS = 0;
-    public static final double kWristToScorePOS = 52 * (4096/360);
+    //blinkin ID 
+    public static final int kBlinkinID = 0;
 
-    public static final int kPOIRotationDOWN = 180;
+    // Positions for wrist
+    public static final int kWristToIntakePOS = -10 * (4096/360); // counts to degrees 
+    public static final double kWristToScorePOSlow = 52 * (4096/360);
+    public static final double kWristToScorePOSmid = 150 * (4096/360) ;//118 * (4096/360);
+    public static final double kWristToScorePOShigh = 160 * (4096/360) ;//123 * (4096/360);
+    public static final double kWristTransitionToPOShigh = 160 * (4096/360); //for the intermittent stage to clear the second pole
+//for high to clear mid pole be 160
+//mid pole is 144
+
+    public static final int kPOIRotationDOWN = 180;;
     public static final int kPOIRotationUP = 0;
 
-    public static final int kExtendorPositionReset = 0;
-    public static final int kExtendorPositionlow = 4; 
-    public static final int kExtendorPositionmid = 32; //65
-    public static final int kExtendorPositionhigh = 53; //106
+    public static final double kExtendorPositionReset = 0;
+    public static final double kExtendorPositionlow = 32; 
+    public static final double kExtendorPositionmid = 37.78; //65
+    public static final double kExtendorPositionhigh = 56.66; //106
 
     public static final double kintakeSpeed = 0.5;
+    public static final double kintakeSpeedBottom = 1;
     public static final double kexpellSpeed = -0.5;
+    public static final int BlueThreshold = 8000;
 
 
 
@@ -189,10 +205,11 @@ public final class Constants {
 
     public static final double kTimeoutMs = 100;
 
+    public static final double kAllowableWristSwingPOS = 28 * LIFT_COUNTS_PER_INCH; // the number is in inches 
     // LIFT PID
-    public static final double kLIFTP = 0.018;
+    public static final double kLIFTP = .009;//0.018;
     public static final double kLIFTI = 0.000025;
-    public static final double kAllowableError = 200;
+    public static final double kAllowableError = 50;
 
   }
 
@@ -207,7 +224,11 @@ public final class Constants {
     public final static double kClawP = 0.8;
     public final static double kClawD = 0;
     public final static double kClawI = 0.0008;
-    public final static double allowableClawError = 0;
+    public final static double allowableClawError = 15;
+
+    public final static double kWristUpPOW = 0.9;
+    public final static double kWristDownPOW = 0.6;
+    
   }
 
 

@@ -45,8 +45,8 @@ import edu.wpi.first.wpilibj.I2C.Port;
 import com.revrobotics.*;
 
 import com.ctre.phoenix.sensors.CANCoder;
-
-public class ClawModule extends SubsystemBase {
+/* 
+public class LimeLightApril extends SubsystemBase {
 
   private final TalonSRX m_clawLeft;
   private final TalonSRX m_clawRight;
@@ -60,10 +60,10 @@ public class ClawModule extends SubsystemBase {
   private final DigitalInput m_coneDetector;
   private final I2C m_cubeDetector;
 
-  public TalonSRXConfiguration m_configs;
+   
 
   private final PWM m_blinkin;
-
+*/
     /************************************************************************************** */
     /*constructor for the claw module     */
     //
@@ -76,6 +76,7 @@ public class ClawModule extends SubsystemBase {
     //bottomRollerID = this is the CAN ID for the bottom intake roller
     //coneDetectorID = this is the digital ID for the robotrio which the cone beambreak is connected to
     /************************************************************************************** */
+    /* 
   public ClawModule(int clawLeftID, int clawRightID,int clawRotationID, int wristID, int topRollerID, int bottomRollerID, int coneDetectorID, int blinkinID ) {
 
     m_clawLeft = new TalonSRX(clawLeftID);
@@ -89,15 +90,6 @@ public class ClawModule extends SubsystemBase {
     m_wristEncoder = new CANCoder(wristID);
     m_clawRotation = new TalonSRX(clawRotationID);
 
-    m_configs = new TalonSRXConfiguration();
-    m_clawRotation.getAllConfigs(m_configs);
-
-    setClawSpeed(ClawConstants.kWristUpPOW);
-
-   // m_configs.primaryPID.selectedFeedbackSensor = FeedbackDevice.RemoteSensor0;
-   // m_configs.slot0.closedLoopPeakOutput = ClawConstants.kWristUpPOW;  //reduce max speed to 80%
-   // m_clawRotation.configAllSettings(m_configs);
-    
     m_wristEncoder.setPosition(0);
 
     m_clawRotation.config_kP(0,ClawConstants.kClawP);
@@ -131,13 +123,6 @@ public class ClawModule extends SubsystemBase {
   
   
 
-  }
-
-  public void setClawSpeed(double speed)
-  {
-    m_configs.primaryPID.selectedFeedbackSensor = FeedbackDevice.RemoteSensor0;
-    m_configs.slot0.closedLoopPeakOutput = speed;  //reduce max speed to 80%
-    m_clawRotation.configAllSettings(m_configs);
   }
 
   //returns the reference for the left claw motor
@@ -185,3 +170,4 @@ public class ClawModule extends SubsystemBase {
   }
 
 } 
+*/

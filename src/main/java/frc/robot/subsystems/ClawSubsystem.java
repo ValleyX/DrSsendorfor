@@ -6,10 +6,13 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.ParamEnum;
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
 import com.ctre.phoenix.sensors.Pigeon2;
 import com.revrobotics.ColorMatchResult;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -20,8 +23,12 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.RobotContainer;
+import frc.robot.Constants.ClawConstants;
 import frc.robot.Constants.ColorConstants;
 import frc.robot.Constants.LiftConstants;
+import frc.robot.subsystems.LiftSubsystem;
+import frc.robot.subsystems.LiftSubsystem.extendPosition;
 import frc.utils.SwerveUtils;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -42,11 +49,28 @@ public final ClawModule m_ClawModule = new ClawModule(LiftConstants.kClawLeftID,
                                                       LiftConstants.kWristID, 
                                                       LiftConstants.kTopRollerID, 
                                                       LiftConstants.kBottomRollerID, 
-                                                      LiftConstants.kConeDetector); 
+                                                      LiftConstants.kConeDetector,
+                                                      LiftConstants.kBlinkinID); 
+
+public ClawSubsystem()
+{
+  //SmartDashboard.putNumber("rollerSpeed", LiftConstants.kintakeSpeedBottom);
+
+}
+
+//public RobotContainer m_RobotContainer = new RobotContainer();
 
   @Override
   public void periodic() 
   {
+
+    SmartDashboard.putNumber("Cancoder readings: ", m_ClawModule.getwristEncoder().getPosition());
+/* 
+    m_ClawModule.getclawRotation().setNeutralMode(NeutralMode.Brake);
+
+    TalonSRXConfiguration talonsrx = new TalonSRXConfiguration();
+    m_ClawModule.getclawRotation().getAllConfigs(talonsrx);
+   */ 
 
    // SmartDashboard.putBoolean("is Cone Beam Broken? = ",  m_ClawModule.getconeDetector().get());
     /* 
@@ -69,7 +93,7 @@ public final ClawModule m_ClawModule = new ClawModule(LiftConstants.kClawLeftID,
   }
 
 
-  public void ClawDrive(boolean intakein, boolean expell)  
+  public void ClawDrive(boolean intakein, boolean expell, boolean clawtoIntake, boolean clawtoExpell)  
   {  
 
     
@@ -80,41 +104,55 @@ public final ClawModule m_ClawModule = new ClawModule(LiftConstants.kClawLeftID,
 
     else if (expell == true)
     {
-        intakeOut(); 
+       intakeOut();
     }
 
     else 
     {
       intakeOff();
+    }
+
+    if ( clawtoIntake )
+    {
+      clawToIntake();
+    }
+
+    else
+    {
 
     }
 
-
+    
   }
    
+    /************************************************************************************** */
+    /*This Function will turn on the claw and roller motors to intake a game piece          */
+    //
+    /************************************************************************************** */
     public void intakeIn() 
-    {
-    
-
-      ColorMatchResult match = m_ClawModule.getcolorMatch().matchClosestColor(m_ClawModule.getboxDetector().getColor());
-
+    {   
       
+
+      //check the status of the cone detection beam (cone has been detected if False???)
+      boolean m_coneDetectionBeam = m_ClawModule.getconeDetector().get();  
   
-     boolean m_coneDetectionBeam = m_ClawModule.getconeDetector().get();
-  
-  
-      if (match.color != ColorConstants.kPurpleTarget || m_coneDetectionBeam == false || match.confidence <= ColorConstants.colorConfidenceTreshold )
+      // Check if the cone or block has been intook into the claw.  If not run motors to intake game piece
+      //if (/*match.color != ColorConstants.kPurpleTarget || */ m_coneDetectionBeam == true /* ||  match.confidence <= ColorConstants.colorConfidenceTreshold */)
+      if ( (m_coneDetectionBeam == true))
       {
         //intaking
        m_ClawModule.getclawLeft().set(ControlMode.PercentOutput, LiftConstants.kintakeSpeed);
        m_ClawModule.getclawRight().set(ControlMode.PercentOutput, LiftConstants.kintakeSpeed);
         
        m_ClawModule.gettopRoller().set(ControlMode.PercentOutput, LiftConstants.kintakeSpeed);
-       m_ClawModule.getbottomRoller().set(ControlMode.PercentOutput, LiftConstants.kintakeSpeed);
+      // double speedBottom = SmartDashboard.getNumber("rollerSpeed", LiftConstants.kintakeSpeedBottom);
+      // m_ClawModule.getbottomRoller().set(ControlMode.PercentOutput, speedBottom);
+
+       m_ClawModule.getbottomRoller().set(ControlMode.PercentOutput, LiftConstants.kintakeSpeedBottom);
        m_currentStoredObject = intakestorage.nothing;
 
       }
-  
+      // If game piece is detected, stop motors
       else
       {
         //intook
@@ -124,19 +162,26 @@ public final ClawModule m_ClawModule = new ClawModule(LiftConstants.kClawLeftID,
         m_ClawModule.gettopRoller().set(ControlMode.PercentOutput, 0);
         m_ClawModule.getbottomRoller().set(ControlMode.PercentOutput, 0);
 
+        //based on if Cone or Cube is detected, update storage object to hold status.
         if ( m_coneDetectionBeam == true)
         {
           m_currentStoredObject = intakestorage.cone;
+         
         }
 
         else 
         {
           m_currentStoredObject = intakestorage.cube;
+
         }
       }
   
     }
 
+    /************************************************************************************** */
+    /*This Function will turn on the claw and roller motors to eject a game piece          */
+    //
+    /************************************************************************************** */
     public void intakeOut() 
     {
   
@@ -150,6 +195,11 @@ public final ClawModule m_ClawModule = new ClawModule(LiftConstants.kClawLeftID,
   
     }
 
+
+    /************************************************************************************** */
+    /*This Function will turn OFF the claw and roller motors when ejecting a game piece     */
+    //
+    /************************************************************************************** */
     public void intakeOff()
     {
         
@@ -161,23 +211,63 @@ public final ClawModule m_ClawModule = new ClawModule(LiftConstants.kClawLeftID,
 
     }
   
-    public void clawToScore()
+    /************************************************************************************** */
+    /*Rotates the claw depending on what height your lift is at     */
+    //
+    /************************************************************************************** */
+    public void clawToScore( extendPosition currentposition)
     {
-        m_ClawModule.getclawRotation().setSelectedSensorPosition(LiftConstants.kWristToScorePOS);
+      switch (currentposition)
+      {
+        case intake:
+         m_ClawModule.getclawRotation().set(ControlMode.Position, LiftConstants.kWristToIntakePOS);
+        break;
+
+        case low:
+          m_ClawModule.getclawRotation().set(ControlMode.Position, LiftConstants.kWristToScorePOSlow);
+        break;
+
+        case mid:
+        m_ClawModule.getclawRotation().set(ControlMode.Position, LiftConstants.kWristToScorePOSmid);
+        break;
+
+        case high:
+        m_ClawModule.getclawRotation().set(ControlMode.Position, LiftConstants.kWristToScorePOShigh);
+        break;
+      }
+      
+
     
     }
   
+    /************************************************************************************** */
+    /*Sets the claw so that it will fit inside the intake     */
+    //
+    /************************************************************************************** */
     public void clawToIntake()
     {
-      m_ClawModule.getclawRotation().setSelectedSensorPosition(LiftConstants.kWristToIntakePOS);
+   
+
+      //m_ClawModule.setClawSpeed(ClawConstants.kWristDownPOW);
+      m_ClawModule.getclawRotation().set(ControlMode.Position, LiftConstants.kWristToIntakePOS);
       
     }
 
-
+    /************************************************************************************** */
+    /*tells whether you are holding a cube, cone, or nothing     */
+    //
+    /************************************************************************************** */
     public intakestorage getIntakestorage()
     {
       return m_currentStoredObject;
     }
+
+    public void setBlinkinto(double d)
+    {
+      m_ClawModule.getBlinkin().setSpeed(d);
+    }
+
+    
 
 
 }
