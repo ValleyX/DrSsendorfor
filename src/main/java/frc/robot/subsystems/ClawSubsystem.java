@@ -120,9 +120,9 @@ public ClawSubsystem()
       clawToIntake();
     }
 
-    else
+    else if (clawtoExpell)
     {
-
+      clawToScore(extendPosition.high);
     }
 
     
@@ -251,7 +251,7 @@ public ClawSubsystem()
     public void clawToIntake()
     {
    
-
+      m_ClawModule.setClawSpeed(ClawConstants.kWristDownPOW);
       //m_ClawModule.setClawSpeed(ClawConstants.kWristDownPOW);
       m_ClawModule.getclawRotation().set(ControlMode.Position, LiftConstants.kWristToIntakePOS);
       

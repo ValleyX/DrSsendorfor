@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.JoyReadWrite;
 import frc.robot.JoyStorage;
 import frc.robot.Constants.LiftConstants;
+import frc.robot.Constants.LightConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
@@ -58,6 +59,8 @@ public class TelopCommand extends CommandBase {
     private final ClawSubsystem m_ClawSubsystem;
     private final XboxController m_driverController;
     private final XboxController m_manipulatorController;
+    private double m_speedDivisor;
+    private double m_speedDivisorRotation;
 
     private final Timer m_fieldTimer;
 
@@ -108,6 +111,7 @@ public class TelopCommand extends CommandBase {
 
         executeCount = 0;
 
+        m_speedDivisor = 1;
     }
 
     // Called when the command is initially scheduled.
@@ -162,6 +166,8 @@ public class TelopCommand extends CommandBase {
         boolean buttonR3ClawtoIntake;
         boolean buttonL3CLawToScore;
         boolean buttonPnematicTipper;
+        boolean buttonR3Driver;
+        boolean buttonL3Driver;
 
         boolean bumperRightIntake;
         boolean bumperLeftExpell;
@@ -170,20 +176,20 @@ public class TelopCommand extends CommandBase {
         if (m_fieldTimer.get() > 105)
         {
             
-            if (m_ClawSubsystem.m_currentStoredObject == m_ClawSubsystem.m_currentStoredObject.cone)
+            if (m_ClawSubsystem.m_ClawModule.getconeDetector().get() == false)
             {
-                m_ClawSubsystem.setBlinkinto(0.67); // gold
+                m_ClawSubsystem.setBlinkinto(LightConstants.kGold); // gold
 
             }
 
-            else if (m_ClawSubsystem.m_currentStoredObject == m_ClawSubsystem.m_currentStoredObject.cube)
+            else if (m_ClawSubsystem.m_ClawModule.getTouchDetector().get() == false)
             {
-                m_ClawSubsystem.setBlinkinto(0.91); // voilet
+                m_ClawSubsystem.setBlinkinto(LightConstants.kViolet); // voilet
             }
 
             else 
             {
-                m_ClawSubsystem.setBlinkinto(-0.11); //strobe red
+                m_ClawSubsystem.setBlinkinto(LightConstants.kStrobeRed); //strobe red
             }
 
         }
@@ -191,20 +197,20 @@ public class TelopCommand extends CommandBase {
         else 
         {
              
-            if (m_ClawSubsystem.m_currentStoredObject == m_ClawSubsystem.m_currentStoredObject.cone)
+            if (m_ClawSubsystem.m_ClawModule.getconeDetector().get() == false)
             {
-                m_ClawSubsystem.setBlinkinto(0.67); // gold
+                m_ClawSubsystem.setBlinkinto(LightConstants.kGold); // gold
 
             }
 
-            else if (m_ClawSubsystem.m_currentStoredObject == m_ClawSubsystem.m_currentStoredObject.cube)
+            else if (m_ClawSubsystem.m_ClawModule.getTouchDetector().get() == false)
             {
-                m_ClawSubsystem.setBlinkinto(0.91); // voilet
+                m_ClawSubsystem.setBlinkinto(LightConstants.kViolet); // voilet
             }
 
             else 
             {
-                m_ClawSubsystem.setBlinkinto(-0.15); //breath blue
+                m_ClawSubsystem.setBlinkinto(LightConstants.kBreathBlue); //breath blue
             }
 
            
@@ -238,6 +244,8 @@ public class TelopCommand extends CommandBase {
             bumperRightIntake = m_manipulatorController.getRightBumper();
             bumperLeftExpell = m_manipulatorController.getLeftBumper();
 
+            buttonR3Driver = m_driverController.getRightStickButton();
+            buttonL3Driver = m_driverController.getLeftStickButton();
             //if the drive type is in record, it records input values and writes them to joyStorage
             if (m_driveType == DriveType.Record){
                
@@ -246,7 +254,8 @@ public class TelopCommand extends CommandBase {
 
 
                 m_joy[executeCount] =  new JoyStorage(driveLeftYstick, driveLeftXstick, driveRightXstick, manipulatorLeftYstick, 
-                buttonALOW, buttonBMID, buttonYHIGH, buttonXRESET,buttonR3ClawtoIntake,buttonL3CLawToScore, bumperRightIntake, bumperLeftExpell,buttonPnematicTipper);
+                buttonALOW, buttonBMID, buttonYHIGH, buttonXRESET,buttonR3ClawtoIntake,buttonL3CLawToScore, bumperRightIntake, 
+                bumperLeftExpell,buttonPnematicTipper, buttonL3Driver, buttonR3Driver);
 
             }
 
@@ -272,7 +281,8 @@ public class TelopCommand extends CommandBase {
             bumperLeftExpell = m_joy[executeCount].bumperLeftExpell;
             bumperRightIntake = m_joy[executeCount].bumperRightIntake;
 
-
+            buttonL3Driver = m_joy[executeCount].driverButtonL3;
+            buttonR3Driver = m_joy[executeCount].driverButtonR3;
         }
 
         //to increment recording, make an index of when inputs are inputted
@@ -283,12 +293,25 @@ public class TelopCommand extends CommandBase {
         SmartDashboard.putNumber("getLeftX", m_driverController.getLeftX());
         SmartDashboard.putNumber("getManipLeftY",manipulatorLeftYstick);
 
+        //changes whether you are in fast or slow mode
+        if(buttonR3Driver == true)
+        {
+            m_speedDivisor = 1;
+            m_speedDivisorRotation = 1;
+
+        }
+        else if(buttonL3Driver == true)
+        {
+            m_speedDivisor = 4;
+            m_speedDivisorRotation = 8;
+        }
+
         //Teleop, using the drive
         m_robotDrive.drive(
             //adds deadband (makes it so the controls aren't hyper sensitive)
-            -MathUtil.applyDeadband( m_SlewY.calculate(driveLeftYstick), OIConstants.kDriveDeadband),
-            -MathUtil.applyDeadband(m_SlewX.calculate(driveLeftXstick), OIConstants.kDriveDeadband),
-            -MathUtil.applyDeadband(driveRightXstick, OIConstants.kDriveDeadband),
+            -MathUtil.applyDeadband( m_SlewY.calculate(driveLeftYstick/m_speedDivisor), OIConstants.kDriveDeadband),
+            -MathUtil.applyDeadband(m_SlewX.calculate(driveLeftXstick/m_speedDivisor), OIConstants.kDriveDeadband),
+            -MathUtil.applyDeadband(driveRightXstick/m_speedDivisorRotation, OIConstants.kDriveDeadband),
             true, false);
         m_robotDrive.periodic(); 
 

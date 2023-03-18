@@ -97,6 +97,9 @@ public class LiftModule extends SubsystemBase {
    m_configs.primaryPID.selectedFeedbackSensor = FeedbackDevice.IntegratedSensor;
    
    m_configs.slot0.closedLoopPeakOutput = .8;  //reduce max speed to 80%
+   //m_extendorRight.getClosedLoopError();
+  // m_extendorRight.setIntegralAccumulator(0);
+  // m_configs.slot0.maxIntegralAccumulator
 
     m_extendorRight.configAllSettings(m_configs);
     m_extendorLeft.configAllSettings(m_configs);
@@ -175,6 +178,15 @@ public class LiftModule extends SubsystemBase {
 
   public TalonFXConfiguration getconfigs(){
     return m_configs;
+  }
+
+  //resets the integral on the lift so the arm doesn't do the funky overshooting thing
+  public void resetIntegral() {
+    m_extendorRight.setIntegralAccumulator(0);
+  }
+
+  public double getPIDError() { //retruns the current error so that it can be used in logic
+    return m_extendorRight.getClosedLoopError();
   }
 
 

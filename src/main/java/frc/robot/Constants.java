@@ -211,7 +211,8 @@ public final class Constants {
     // LIFT PID
     public static final double kLIFTP = .009;//0.018;
     public static final double kLIFTI = 0.000025;
-    public static final double kAllowableError = 100;
+    public static final double kAllowableError = 50;
+    public static final double LiftdownEnough = 1 * LIFT_COUNTS_PER_INCH;
 
   }
 
@@ -223,13 +224,13 @@ public final class Constants {
   }
 
   public static final class ClawConstants {
-    public final static double kClawP = 0.8;
+    public final static double kClawP = 0.4;
     public final static double kClawD = 0;
     public final static double kClawI = 0.0008;
     public final static double allowableClawError = 15;
 
-    public final static double kWristUpPOW = 0.9;
-    public final static double kWristDownPOW = 0.6;
+    public final static double kWristUpPOW = 1;
+    public final static double kWristDownPOW = 0.3;
     
   }
 
@@ -238,9 +239,16 @@ public final class Constants {
   public static final class OIConstants {
     public static final int kDriverControllerPort = 0;
     public static final double kDriveDeadband = 0.05;
-
     public static final int KManipulatorControllerPort = 1;
 
+  }
+
+  public static final class LightConstants {
+    public static final double kViolet = 0.91;
+    public static final double kGold = 0.67;
+    public static final double kStrobeRed = -0.11;
+    public static final double kBreathBlue = -0.15;
+    
   }
 
   public static final class AutoConstants {

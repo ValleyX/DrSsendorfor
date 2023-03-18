@@ -33,6 +33,7 @@ public class LiftSubsystem extends SubsystemBase {
 public static enum extendPosition
 {
   intake,
+  intookCone,
   low,
   mid,
   high
@@ -79,67 +80,137 @@ public void periodic() {
     //extendPneumatic = boonean for extending the pneumatic cone tipper
     /************************************************************************************** */
   public void liftDrive(double extendorSpeed, boolean extendHigh, boolean extendMid, boolean extendLow, boolean extendRest,boolean extendPnematic) {
+
+    
+      
+        //if extendLow button = true, use constant to calculate the encoder position, then make the lift module go to said calculated position
+        if (extendLow  && ( m_currentPOSofLift != extendPosition.low ) )
+        {
+        // double currentPositionRight = m_liftModule.getExtendorRight().getSelectedSensorPosition(0);
+          double targetPositionRotationsRight = (LiftConstants.LIFT_COUNTS_PER_INCH * LiftConstants.kExtendorPositionlow);
+          SmartDashboard.putNumber("target Position", targetPositionRotationsRight);
+          
+          m_clawSubsystem.m_ClawModule.setClawSpeed(ClawConstants.kWristUpPOW);
+          m_liftModule.getconfigs().slot0.closedLoopPeakOutput = .8;
+
+          m_liftModule.getExtendorRight().configAllSettings(m_liftModule.getconfigs());
+          m_liftModule.getExtendorLeft().configAllSettings(m_liftModule.getconfigs());
+
+          m_liftModule.getExtendorRight().set(ControlMode.Position, targetPositionRotationsRight);
+          SmartDashboard.putString("ButtonPress", "ExtendLow");
+
+          m_currentPOSofLift = extendPosition.low; //keeps track of current position once the action is finished
+        }
+
+        //if extendMid button = true, use constant to calculate the encoder position, then make the lift module go to said calculated position
+        else if (extendMid  && ( m_currentPOSofLift != extendPosition.mid ))
+        {
+
+        // double currentPositionRight = m_liftModule.getExtendorRight().getSelectedSensorPosition(0);
+          double targetPositionRotationsRight = (LiftConstants.LIFT_COUNTS_PER_INCH * LiftConstants.kExtendorPositionmid);
+          SmartDashboard.putNumber("target Position", targetPositionRotationsRight);
+
+          m_clawSubsystem.m_ClawModule.setClawSpeed(ClawConstants.kWristUpPOW);
+          m_liftModule.getconfigs().slot0.closedLoopPeakOutput = .6;
+
+          m_liftModule.getExtendorRight().configAllSettings(m_liftModule.getconfigs());
+          m_liftModule.getExtendorLeft().configAllSettings(m_liftModule.getconfigs());
+          
+          m_liftModule.getExtendorRight().set(ControlMode.Position, targetPositionRotationsRight);
+          SmartDashboard.putString("ButtonPress", "extendMid");
+
+          m_currentPOSofLift = extendPosition.mid;
+        }
+
+        //if extendHigh button = true, use constant to calculate the encoder position, then make the lift module go to said calculated position
+        else if (extendHigh && ( m_currentPOSofLift != extendPosition.high ))
+        {
+          double targetPositionRotationsRight = (LiftConstants.LIFT_COUNTS_PER_INCH * LiftConstants.kExtendorPositionhigh);
+          SmartDashboard.putNumber("target Position", targetPositionRotationsRight);
+
+          m_clawSubsystem.m_ClawModule.setClawSpeed(1);
+          m_liftModule.getconfigs().slot0.closedLoopPeakOutput = .6;
+
+          m_liftModule.getExtendorRight().configAllSettings(m_liftModule.getconfigs());
+          m_liftModule.getExtendorLeft().configAllSettings(m_liftModule.getconfigs());
+          
+          m_liftModule.getExtendorRight().set(ControlMode.Position, targetPositionRotationsRight);
+          SmartDashboard.putString("ButtonPress", "extendHigh");
+          m_currentPOSofLift = extendPosition.high;
+
+        }
+/* 
+    //if there is a cube use this drop code
+    else if (m_clawSubsystem.m_ClawModule.getTouchDetector().get() == false)
+    {
+            //if extendLow button = true, use constant to calculate the encoder position, then make the lift module go to said calculated position
+        if (extendLow  && ( m_currentPOSofLift != extendPosition.low ) )
+        {
+        // double currentPositionRight = m_liftModule.getExtendorRight().getSelectedSensorPosition(0);
+          double targetPositionRotationsRight = (LiftConstants.LIFT_COUNTS_PER_INCH * LiftConstants.kExtendorPositionlow);
+          SmartDashboard.putNumber("target Position", targetPositionRotationsRight);
+          
+          m_clawSubsystem.m_ClawModule.setClawSpeed(ClawConstants.kWristUpPOW);
+          m_liftModule.getconfigs().slot0.closedLoopPeakOutput = .8;
+
+          m_liftModule.getExtendorRight().configAllSettings(m_liftModule.getconfigs());
+          m_liftModule.getExtendorLeft().configAllSettings(m_liftModule.getconfigs());
+
+          m_liftModule.getExtendorRight().set(ControlMode.Position, targetPositionRotationsRight);
+          SmartDashboard.putString("ButtonPress", "ExtendLow");
+
+          m_currentPOSofLift = extendPosition.low; //keeps track of current position once the action is finished
+        }
+
+        //if extendMid button = true, use constant to calculate the encoder position, then make the lift module go to said calculated position
+        else if (extendMid  && ( m_currentPOSofLift != extendPosition.mid ))
+        {
+
+        // double currentPositionRight = m_liftModule.getExtendorRight().getSelectedSensorPosition(0);
+          double targetPositionRotationsRight = (LiftConstants.LIFT_COUNTS_PER_INCH * LiftConstants.kExtendorPositionmid);
+          SmartDashboard.putNumber("target Position", targetPositionRotationsRight);
+
+          m_clawSubsystem.m_ClawModule.setClawSpeed(ClawConstants.kWristUpPOW);
+          m_liftModule.getconfigs().slot0.closedLoopPeakOutput = .6;
+
+          m_liftModule.getExtendorRight().configAllSettings(m_liftModule.getconfigs());
+          m_liftModule.getExtendorLeft().configAllSettings(m_liftModule.getconfigs());
+          
+          m_liftModule.getExtendorRight().set(ControlMode.Position, targetPositionRotationsRight);
+          SmartDashboard.putString("ButtonPress", "extendMid");
+
+          m_currentPOSofLift = extendPosition.mid;
+        }
+
+        //if extendHigh button = true, use constant to calculate the encoder position, then make the lift module go to said calculated position
+        else if (extendHigh && ( m_currentPOSofLift != extendPosition.high ))
+        {
+          double targetPositionRotationsRight = (LiftConstants.LIFT_COUNTS_PER_INCH * LiftConstants.kExtendorPositionhigh);
+          SmartDashboard.putNumber("target Position", targetPositionRotationsRight);
+
+          m_clawSubsystem.m_ClawModule.setClawSpeed(1);
+          m_liftModule.getconfigs().slot0.closedLoopPeakOutput = .6;
+
+          m_liftModule.getExtendorRight().configAllSettings(m_liftModule.getconfigs());
+          m_liftModule.getExtendorLeft().configAllSettings(m_liftModule.getconfigs());
+          
+          m_liftModule.getExtendorRight().set(ControlMode.Position, targetPositionRotationsRight);
+          SmartDashboard.putString("ButtonPress", "extendHigh");
+          m_currentPOSofLift = extendPosition.high;
+
+        }
+
+
+
+    }
+
+    */
+
     
 
-    //if extendLow button = true, use constant to calculate the encoder position, then make the lift module go to said calculated position
-    if (extendLow  && ( m_currentPOSofLift != extendPosition.low ) )
-    {
-     // double currentPositionRight = m_liftModule.getExtendorRight().getSelectedSensorPosition(0);
-      double targetPositionRotationsRight = (LiftConstants.LIFT_COUNTS_PER_INCH * LiftConstants.kExtendorPositionlow);
-      SmartDashboard.putNumber("target Position", targetPositionRotationsRight);
-      
-      m_clawSubsystem.m_ClawModule.setClawSpeed(ClawConstants.kWristUpPOW);
-      m_liftModule.getconfigs().slot0.closedLoopPeakOutput = .8;
-
-      m_liftModule.getExtendorRight().configAllSettings(m_liftModule.getconfigs());
-      m_liftModule.getExtendorLeft().configAllSettings(m_liftModule.getconfigs());
-
-      m_liftModule.getExtendorRight().set(ControlMode.Position, targetPositionRotationsRight);
-      SmartDashboard.putString("ButtonPress", "ExtendLow");
-
-      m_currentPOSofLift = extendPosition.low; //keeps track of current position once the action is finished
-    }
-
-    //if extendMid button = true, use constant to calculate the encoder position, then make the lift module go to said calculated position
-    else if (extendMid  && ( m_currentPOSofLift != extendPosition.mid ))
-    {
-
-     // double currentPositionRight = m_liftModule.getExtendorRight().getSelectedSensorPosition(0);
-      double targetPositionRotationsRight = (LiftConstants.LIFT_COUNTS_PER_INCH * LiftConstants.kExtendorPositionmid);
-      SmartDashboard.putNumber("target Position", targetPositionRotationsRight);
-
-      m_clawSubsystem.m_ClawModule.setClawSpeed(ClawConstants.kWristUpPOW);
-      m_liftModule.getconfigs().slot0.closedLoopPeakOutput = .6;
-
-      m_liftModule.getExtendorRight().configAllSettings(m_liftModule.getconfigs());
-      m_liftModule.getExtendorLeft().configAllSettings(m_liftModule.getconfigs());
-      
-      m_liftModule.getExtendorRight().set(ControlMode.Position, targetPositionRotationsRight);
-      SmartDashboard.putString("ButtonPress", "extendMid");
-
-      m_currentPOSofLift = extendPosition.mid;
-    }
-
-    //if extendHigh button = true, use constant to calculate the encoder position, then make the lift module go to said calculated position
-    else if (extendHigh && ( m_currentPOSofLift != extendPosition.high ))
-    {
-      double targetPositionRotationsRight = (LiftConstants.LIFT_COUNTS_PER_INCH * LiftConstants.kExtendorPositionhigh);
-      SmartDashboard.putNumber("target Position", targetPositionRotationsRight);
-
-      m_clawSubsystem.m_ClawModule.setClawSpeed(1);
-      m_liftModule.getconfigs().slot0.closedLoopPeakOutput = .6;
-
-      m_liftModule.getExtendorRight().configAllSettings(m_liftModule.getconfigs());
-      m_liftModule.getExtendorLeft().configAllSettings(m_liftModule.getconfigs());
-      
-      m_liftModule.getExtendorRight().set(ControlMode.Position, targetPositionRotationsRight);
-      SmartDashboard.putString("ButtonPress", "extendHigh");
-      m_currentPOSofLift = extendPosition.high;
-
-    }
-
     //if extendRest button = true, use constant to calculate the encoder position, then make the lift module go to said calculated position (rest/intakle pos)
-    else if (extendRest && ( m_currentPOSofLift != extendPosition.intake ))
+    else if (extendRest && ( m_currentPOSofLift != extendPosition.intake )
+    && (m_clawSubsystem.m_ClawModule.getconeDetector().get() == true && m_clawSubsystem.m_ClawModule.getTouchDetector().get() == true))
     {
       double targetPositionRotationsRight = (LiftConstants.LIFT_COUNTS_PER_INCH * LiftConstants.kExtendorPositionReset);
       SmartDashboard.putNumber("target Position", targetPositionRotationsRight);
@@ -156,7 +227,9 @@ public void periodic() {
 
     }
     
-    else if ((m_clawSubsystem.m_currentStoredObject == m_clawSubsystem.m_currentStoredObject.cone) && ( m_currentPOSofLift == extendPosition.intake ))
+    else if ((m_clawSubsystem.m_ClawModule.getconeDetector().get() == false) && ( m_currentPOSofLift == extendPosition.intake ))
+  
+    //else if ((m_clawSubsystem.m_currentStoredObject == m_clawSubsystem.m_currentStoredObject.cone) && ( m_currentPOSofLift == extendPosition.intake ))
     {
       double targetPositionRotationsRight = (LiftConstants.LIFT_COUNTS_PER_INCH * LiftConstants.kExtendorPositionCone);
       SmartDashboard.putNumber("target Position", targetPositionRotationsRight);
@@ -165,18 +238,14 @@ public void periodic() {
       m_liftModule.getExtendorLeft().configAllSettings(m_liftModule.getconfigs());
       
       m_liftModule.getExtendorRight().set(ControlMode.Position, targetPositionRotationsRight);
-      SmartDashboard.putString("ButtonPress", "extendRest");
 
+      m_currentPOSofLift = m_currentPOSofLift.intookCone;
     }
-    //if extendPneumatic button = true, extend the pneumatic cone tipper to pneumaticaly tip cones so they can be intaked
-    else if (extendPnematic){
-      m_liftModule.getconeDeporter().set(true);
-      
-    }
+
     //makes sure the tipper goes back to its inactive position
     else if (extendorSpeed > 0.05 || extendorSpeed < -0.05) 
     {
-      m_liftModule.getconeDeporter().set(false);
+     // m_liftModule.getconeDeporter().set(false);
       double liftYstick = -extendorSpeed;
       
       //takes joystick and limits the lift speed to 30%
@@ -186,7 +255,7 @@ public void periodic() {
       }
 
       //detects if the lift is at the bottom limit switch, if it is not, it lets you continue moving the lift down
-      else if (liftYstick <= -0.3  && m_liftModule.getLiftLimitSwitchLeft().get() == true)
+      else if ((liftYstick <= -0.3)  && (m_liftModule.getLiftLimitSwitchLeft().get() == true) && (m_liftModule.getLiftLimitSwitchRight().get() == true))
       {
         liftYstick = -0.3;
       }
@@ -201,12 +270,29 @@ public void periodic() {
 
       //applys power to the lift motors depending on the results of the if block above
 
-      m_liftModule.getExtendorRight().set(ControlMode.PercentOutput, liftYstick);
 
+      m_liftModule.getExtendorRight().set(ControlMode.PercentOutput, liftYstick);
+      
+    
+    }
+    else if (m_liftModule.getPIDError() < LiftConstants.kAllowableError){ //this resets the integral so that it hopefully doesn't overextend and then underextend
+      m_liftModule.resetIntegral();
+    }
+///////NEW
+     //if extendPneumatic button = true, extend the pneumatic cone tipper to pneumaticaly tip cones so they can be intaked
+    //if the current postion of the lift is in the intake state then the pnuematics will be allowed to fire. 
+     if (extendPnematic && (m_currentPOSofLift == extendPosition.intake)){
+      m_liftModule.getconeDeporter().set(true);
     
     }
 
-    if ((m_currentPOSofLift == extendPosition.intake) && (Math.abs(m_liftModule.getExtendorRight().getSelectedSensorPosition()) < LiftConstants.kAllowableError))
+    else 
+    {
+      m_liftModule.getconeDeporter().set(false);
+    }
+///////NEW
+
+    if ((m_currentPOSofLift == extendPosition.intake) && (Math.abs(m_liftModule.getExtendorRight().getSelectedSensorPosition()) < LiftConstants.LiftdownEnough))
     {
       m_clawSubsystem.m_ClawModule.getclawRotation().set(ControlMode.PercentOutput, 0);
     }

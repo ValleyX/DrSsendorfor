@@ -19,6 +19,9 @@ public class JoyStorage implements Serializable {
 
         public boolean bumperLeftExpell;
         public boolean bumperRightIntake;
+
+        public boolean driverButtonR3;
+        public boolean driverButtonL3;
         
 
 
@@ -38,7 +41,10 @@ public class JoyStorage implements Serializable {
         boolean buttonR3,
         boolean buttonL3,
         boolean bumperLeftExpell,
-        boolean bumperRightIntake,boolean buttonBack) {
+        boolean bumperRightIntake,
+        boolean buttonBack,
+        boolean driverButtonL3,
+        boolean driverButtonR3) {
         this.leftdriveYstick = leftdriveYstick;
         this.leftdriveXStick = leftdriveXStick;
         this.rightdriveXstick = rightdriveXstick;
@@ -52,6 +58,8 @@ public class JoyStorage implements Serializable {
         this.buttonBack = buttonBack;
         this.bumperLeftExpell = bumperLeftExpell;
         this.bumperRightIntake = bumperRightIntake;
+        this.driverButtonL3 = driverButtonL3;
+        this.driverButtonR3 = driverButtonR3;
 
     }
 

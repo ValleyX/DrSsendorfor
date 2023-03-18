@@ -115,7 +115,7 @@ public class RobotContainer {
     //chooser run in auto mode
     m_chooser.setDefaultOption("Left", m_SeqCmdPlaybackLeft);
     m_chooser.addOption("Right",       m_SeqCmdPlaybackRight);
-    m_chooser.addOption("Banlace",       m_SeqCmdPlaybackBalance);
+    m_chooser.addOption("Balance",       m_SeqCmdPlaybackBalance);
    // m_chooser.addOption("Record Full 15 secs",  m_SeqCmdRecord);
     //m_chooser.addOption("Record 13 secs",  m_SeqCmdRecordBalance);
 
