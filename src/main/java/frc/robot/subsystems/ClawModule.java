@@ -58,7 +58,7 @@ public class ClawModule extends SubsystemBase {
   private final CANCoder m_wristEncoder;
 
   private final DigitalInput m_coneDetector;
-  private final I2C m_cubeDetector;
+  private final DigitalInput m_touchSensor;
 
   public TalonSRXConfiguration m_configs;
 
@@ -76,7 +76,7 @@ public class ClawModule extends SubsystemBase {
     //bottomRollerID = this is the CAN ID for the bottom intake roller
     //coneDetectorID = this is the digital ID for the robotrio which the cone beambreak is connected to
     /************************************************************************************** */
-  public ClawModule(int clawLeftID, int clawRightID,int clawRotationID, int wristID, int topRollerID, int bottomRollerID, int coneDetectorID, int blinkinID ) {
+  public ClawModule(int clawLeftID, int clawRightID,int clawRotationID, int wristID, int topRollerID, int bottomRollerID, int coneDetectorID, int touchId, int blinkinID ) {
 
     m_clawLeft = new TalonSRX(clawLeftID);
     m_clawRight = new TalonSRX(clawRightID);
@@ -124,8 +124,10 @@ public class ClawModule extends SubsystemBase {
     m_coneDetector = new DigitalInput(coneDetectorID);
     addChild("ConeDectionBeam", m_coneDetector);
 
-    m_cubeDetector = new I2C(Port.kOnboard ,0 );
-    
+    m_touchSensor = new DigitalInput(touchId);
+    addChild("touchSensor", m_touchSensor);
+
+        
     m_blinkin = new PWM(blinkinID);
     addChild("blinkin", m_blinkin);
   
@@ -175,10 +177,11 @@ public class ClawModule extends SubsystemBase {
     return m_coneDetector;
   }
 
-  public I2C getcubeDetector(){
-    return m_cubeDetector;
+  //returns a reference for DI port on robotRIO
+  public DigitalInput getTouchDetector() {
+    return m_touchSensor;
   }
-
+  
   //returns a reference for the blinkin
   public PWM getBlinkin(){
     return m_blinkin;

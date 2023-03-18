@@ -58,10 +58,10 @@ public LiftSubsystem(ClawSubsystem claw)
                                                                                     
 //subsystem overide that is called every 20 milliseconds
 public void periodic() {
-  //double counts = m_liftModule.getExtendorRight().getSelectedSensorPosition();
+  double counts = m_liftModule.getExtendorRight().getSelectedSensorPosition();
   SmartDashboard.putNumber("power of lift motor: ", m_liftModule.getExtendorRight().getMotorOutputPercent());
-  //SmartDashboard.putNumber("current position of extendors in counts: ", counts);
-  //SmartDashboard.putNumber("current position of extendors in inch: " ,counts/ LiftConstants.LIFT_COUNTS_PER_INCH);
+  SmartDashboard.putNumber("current position of extendors in counts: ", counts);
+  SmartDashboard.putNumber("current position of extendors in inch: " ,counts/ LiftConstants.LIFT_COUNTS_PER_INCH);
 
   SmartDashboard.putNumber("current power of lift motor: ", m_liftModule.getExtendorRight().get());
 
@@ -155,7 +155,19 @@ public void periodic() {
       m_currentPOSofLift = extendPosition.intake;
 
     }
+    
+    else if ((m_clawSubsystem.m_currentStoredObject == m_clawSubsystem.m_currentStoredObject.cone) && ( m_currentPOSofLift == extendPosition.intake ))
+    {
+      double targetPositionRotationsRight = (LiftConstants.LIFT_COUNTS_PER_INCH * LiftConstants.kExtendorPositionCone);
+      SmartDashboard.putNumber("target Position", targetPositionRotationsRight);
 
+      m_liftModule.getExtendorRight().configAllSettings(m_liftModule.getconfigs());
+      m_liftModule.getExtendorLeft().configAllSettings(m_liftModule.getconfigs());
+      
+      m_liftModule.getExtendorRight().set(ControlMode.Position, targetPositionRotationsRight);
+      SmartDashboard.putString("ButtonPress", "extendRest");
+
+    }
     //if extendPneumatic button = true, extend the pneumatic cone tipper to pneumaticaly tip cones so they can be intaked
     else if (extendPnematic){
       m_liftModule.getconeDeporter().set(true);
@@ -204,8 +216,11 @@ public void periodic() {
     {
       m_liftModule.getExtendorRight().setSelectedSensorPosition(0);
       m_clawSubsystem.m_ClawModule.getclawRotation().set(ControlMode.PercentOutput, 0);
+      m_currentPOSofLift = m_currentPOSofLift.intake;
     }
+
   }
+
 
 
   public void extend() {

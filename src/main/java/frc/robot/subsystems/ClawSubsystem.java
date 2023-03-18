@@ -50,6 +50,7 @@ public final ClawModule m_ClawModule = new ClawModule(LiftConstants.kClawLeftID,
                                                       LiftConstants.kTopRollerID, 
                                                       LiftConstants.kBottomRollerID, 
                                                       LiftConstants.kConeDetector,
+                                                      LiftConstants.kTouchSensor,
                                                       LiftConstants.kBlinkinID); 
 
 public ClawSubsystem()
@@ -65,6 +66,8 @@ public ClawSubsystem()
   {
 
     SmartDashboard.putNumber("Cancoder readings: ", m_ClawModule.getwristEncoder().getPosition());
+
+    //SmartDashboard.putBoolean("button pressed: ", m_ClawModule.getTouchDetector().get());
 /* 
     m_ClawModule.getclawRotation().setNeutralMode(NeutralMode.Brake);
 
@@ -135,10 +138,11 @@ public ClawSubsystem()
 
       //check the status of the cone detection beam (cone has been detected if False???)
       boolean m_coneDetectionBeam = m_ClawModule.getconeDetector().get();  
+      boolean m_touchSensor = m_ClawModule.getTouchDetector().get();  
   
       // Check if the cone or block has been intook into the claw.  If not run motors to intake game piece
       //if (/*match.color != ColorConstants.kPurpleTarget || */ m_coneDetectionBeam == true /* ||  match.confidence <= ColorConstants.colorConfidenceTreshold */)
-      if ( (m_coneDetectionBeam == true))
+      if ( (m_coneDetectionBeam == true) && (m_touchSensor == true))
       {
         //intaking
        m_ClawModule.getclawLeft().set(ControlMode.PercentOutput, LiftConstants.kintakeSpeed);
@@ -163,7 +167,7 @@ public ClawSubsystem()
         m_ClawModule.getbottomRoller().set(ControlMode.PercentOutput, 0);
 
         //based on if Cone or Cube is detected, update storage object to hold status.
-        if ( m_coneDetectionBeam == true)
+        if ( m_coneDetectionBeam == false)
         {
           m_currentStoredObject = intakestorage.cone;
          

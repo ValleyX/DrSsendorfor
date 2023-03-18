@@ -167,6 +167,7 @@ public final class Constants {
     public static final int kConeDetector = 1;
     public static final int kLiftLimitSwitchLeft = 2;
     public static final int kLiftLimitSwitchRight = 3;
+    public static final int kTouchSensor = 9;
 
     //blinkin ID 
     public static final int kBlinkinID = 0;
@@ -184,9 +185,10 @@ public final class Constants {
     public static final int kPOIRotationUP = 0;
 
     public static final double kExtendorPositionReset = 0;
+    public static final double kExtendorPositionCone = 6;
     public static final double kExtendorPositionlow = 32; 
-    public static final double kExtendorPositionmid = 37.78; //65
-    public static final double kExtendorPositionhigh = 56.66; //106
+    public static final double kExtendorPositionmid = 39.78; //65
+    public static final double kExtendorPositionhigh = 58.66; //106
 
     public static final double kintakeSpeed = 0.5;
     public static final double kintakeSpeedBottom = 1;
@@ -209,7 +211,7 @@ public final class Constants {
     // LIFT PID
     public static final double kLIFTP = .009;//0.018;
     public static final double kLIFTI = 0.000025;
-    public static final double kAllowableError = 50;
+    public static final double kAllowableError = 100;
 
   }
 

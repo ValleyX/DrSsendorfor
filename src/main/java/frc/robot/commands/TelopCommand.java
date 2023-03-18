@@ -14,6 +14,7 @@ package frc.robot.commands;
 import com.fasterxml.jackson.databind.Module.SetupContext;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
@@ -64,7 +65,8 @@ public class TelopCommand extends CommandBase {
     private JoyStorage m_joy[];
     private final int m_joyCountmax = 750;
     String m_filename;
-
+    private SlewRateLimiter m_SlewX;
+    private SlewRateLimiter m_SlewY;
 
 //this is the construcor for the teleop command class
 
@@ -84,6 +86,10 @@ public class TelopCommand extends CommandBase {
      m_manipulatorController = new XboxController(OIConstants.KManipulatorControllerPort);
 
      m_fieldTimer = new Timer();
+
+     m_SlewX = new SlewRateLimiter(2);
+     m_SlewY = new SlewRateLimiter(2);
+
       
      //maps the subsystems to class variables
         m_robotDrive = subsystem;
@@ -160,6 +166,7 @@ public class TelopCommand extends CommandBase {
         boolean bumperRightIntake;
         boolean bumperLeftExpell;
 
+
         if (m_fieldTimer.get() > 105)
         {
             
@@ -234,6 +241,10 @@ public class TelopCommand extends CommandBase {
             //if the drive type is in record, it records input values and writes them to joyStorage
             if (m_driveType == DriveType.Record){
                
+                driveLeftYstick /= 4;
+                driveLeftXstick /= 4;
+
+
                 m_joy[executeCount] =  new JoyStorage(driveLeftYstick, driveLeftXstick, driveRightXstick, manipulatorLeftYstick, 
                 buttonALOW, buttonBMID, buttonYHIGH, buttonXRESET,buttonR3ClawtoIntake,buttonL3CLawToScore, bumperRightIntake, bumperLeftExpell,buttonPnematicTipper);
 
@@ -275,8 +286,8 @@ public class TelopCommand extends CommandBase {
         //Teleop, using the drive
         m_robotDrive.drive(
             //adds deadband (makes it so the controls aren't hyper sensitive)
-            -MathUtil.applyDeadband(driveLeftYstick, OIConstants.kDriveDeadband),
-            -MathUtil.applyDeadband(driveLeftXstick, OIConstants.kDriveDeadband),
+            -MathUtil.applyDeadband( m_SlewY.calculate(driveLeftYstick), OIConstants.kDriveDeadband),
+            -MathUtil.applyDeadband(m_SlewX.calculate(driveLeftXstick), OIConstants.kDriveDeadband),
             -MathUtil.applyDeadband(driveRightXstick, OIConstants.kDriveDeadband),
             true, false);
         m_robotDrive.periodic(); 
