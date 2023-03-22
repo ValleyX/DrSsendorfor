@@ -67,6 +67,7 @@ public class TelopCommand extends CommandBase {
     //storage for input values, used for playback for recording autonomous
     private JoyStorage m_joy[];
     private final int m_joyCountmax = 750;
+    private  int m_violetstrobeCounter = 0;
     String m_filename;
     private SlewRateLimiter m_SlewX;
     private SlewRateLimiter m_SlewY;
@@ -112,6 +113,7 @@ public class TelopCommand extends CommandBase {
         executeCount = 0;
 
         m_speedDivisor = 1;
+        m_speedDivisorRotation = 1;
     }
 
     // Called when the command is initially scheduled.
@@ -168,11 +170,12 @@ public class TelopCommand extends CommandBase {
         boolean buttonPnematicTipper;
         boolean buttonR3Driver;
         boolean buttonL3Driver;
+        boolean buttonStartDriver;
 
         boolean bumperRightIntake;
         boolean bumperLeftExpell;
-
-
+        double triggerLeftConeIndicator;
+        double triggerRightCubeIndicator;
         if (m_fieldTimer.get() > 105)
         {
             
@@ -243,14 +246,22 @@ public class TelopCommand extends CommandBase {
 
             bumperRightIntake = m_manipulatorController.getRightBumper();
             bumperLeftExpell = m_manipulatorController.getLeftBumper();
+            triggerLeftConeIndicator = m_driverController.getLeftTriggerAxis();
+            triggerRightCubeIndicator = m_driverController.getRightTriggerAxis();
+            //buttonR3Driver = m_driverController.getRightStickButton();
+            //buttonL3Driver = m_driverController.getLeftStickButton();
 
-            buttonR3Driver = m_driverController.getRightStickButton();
-            buttonL3Driver = m_driverController.getLeftStickButton();
+            buttonR3Driver = m_driverController.getRightBumper();
+            buttonL3Driver = m_driverController.getLeftBumper();
+            buttonStartDriver = m_driverController.getStartButton();
+
+            
             //if the drive type is in record, it records input values and writes them to joyStorage
             if (m_driveType == DriveType.Record){
                
-                driveLeftYstick /= 4;
-                driveLeftXstick /= 4;
+                driveLeftYstick /= 2.5;
+                driveLeftXstick /= 2.5;
+                driveRightXstick /= 2.5;
 
 
                 m_joy[executeCount] =  new JoyStorage(driveLeftYstick, driveLeftXstick, driveRightXstick, manipulatorLeftYstick, 
@@ -283,6 +294,9 @@ public class TelopCommand extends CommandBase {
 
             buttonL3Driver = m_joy[executeCount].driverButtonL3;
             buttonR3Driver = m_joy[executeCount].driverButtonR3;
+            buttonStartDriver = false;
+            triggerLeftConeIndicator = 0;
+            triggerRightCubeIndicator = 0;
         }
 
         //to increment recording, make an index of when inputs are inputted
@@ -291,8 +305,10 @@ public class TelopCommand extends CommandBase {
         //pushing values to smart dashbord
         SmartDashboard.putNumber("executeCount", executeCount);
         SmartDashboard.putNumber("getLeftX", m_driverController.getLeftX());
+        SmartDashboard.putNumber("getRightX", m_driverController.getRightX());
+        SmartDashboard.putNumber("getYaw", m_robotDrive.getHeading());
         SmartDashboard.putNumber("getManipLeftY",manipulatorLeftYstick);
-
+/* 
         //changes whether you are in fast or slow mode
         if(buttonR3Driver == true)
         {
@@ -303,8 +319,49 @@ public class TelopCommand extends CommandBase {
         else if(buttonL3Driver == true)
         {
             m_speedDivisor = 4;
-            m_speedDivisorRotation = 8;
+            m_speedDivisorRotation = 2;
         }
+*/
+        if(buttonStartDriver == true){
+            m_robotDrive.zeroHeading();
+        }
+        if(buttonR3Driver == true)
+        {
+            m_speedDivisor = 4;
+            m_speedDivisorRotation = 4;
+        }
+        else if(buttonL3Driver == true)
+        {
+            m_speedDivisor = 2;
+            m_speedDivisorRotation = 2;
+        }
+        else
+        {
+            m_speedDivisor = 1;
+            m_speedDivisorRotation = 1;
+        }
+
+        
+        if (triggerLeftConeIndicator >= 0.1)
+        {
+            m_ClawSubsystem.setBlinkinto(LightConstants.kStrobeGold);
+        }
+        else if(triggerRightCubeIndicator >= 0.1)
+        {
+            if (m_violetstrobeCounter <= 10)
+            {
+                m_ClawSubsystem.setBlinkinto(LightConstants.kViolet);
+                m_violetstrobeCounter++;
+            }
+
+            else 
+            {
+                m_ClawSubsystem.setBlinkinto(LightConstants.kBreathBlue);
+                m_violetstrobeCounter = 0;
+            }
+
+        }
+
 
         //Teleop, using the drive
         m_robotDrive.drive(
@@ -339,7 +396,10 @@ public class TelopCommand extends CommandBase {
         }
 
         //checks for button pressess related to the claw
-        m_ClawSubsystem.ClawDrive(bumperRightIntake, bumperLeftExpell, buttonR3ClawtoIntake, buttonL3CLawToScore);
+        boolean touch = m_LiftSubsystem.m_clawSubsystem.m_ClawModule.getTouchDetector().get();
+        double liftPosCurrent =  m_LiftSubsystem.m_liftModule.getExtendorRight().getSelectedSensorPosition();
+        m_ClawSubsystem.ClawDrive(bumperRightIntake, bumperLeftExpell, buttonR3ClawtoIntake, buttonL3CLawToScore,
+        touch, liftPosCurrent);
 
     
         //Teleop 

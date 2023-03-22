@@ -45,11 +45,13 @@ public extendPosition m_currentPOSofLift = extendPosition.intake;
 public boolean ExtendorInMotion; //tells if the lift is currently moving
 
 public LiftModule m_liftModule;
-private ClawSubsystem m_clawSubsystem;
+public ClawSubsystem m_clawSubsystem;
+private double m_currentLiftSpeed;
 
 public LiftSubsystem(ClawSubsystem claw)
 {
     m_clawSubsystem = claw;
+    m_currentLiftSpeed = 0;
 
     //creats the lift module object
     m_liftModule = new LiftModule(LiftConstants.kExtendorRightCanID, LiftConstants.kExtendorLeftCanID, LiftConstants.kLiftLimitSwitchLeft, LiftConstants.kLiftLimitSwitchRight, LiftConstants.kPneumaticCANID , LiftConstants.kPneumaticPort );
@@ -68,6 +70,10 @@ public void periodic() {
 
   SmartDashboard.putBoolean("Digital Pressure Switch", m_liftModule.getPneumaticHub().getPressureSwitch());
   SmartDashboard.putBoolean("Digital Compressor Switch", m_liftModule.getPneumaticHub().getCompressor());
+
+  //remove this if we see periodic errors
+  //SmartDashboard.putNumber("lift PID error: ", m_liftModule.getPIDError());
+ // SmartDashboard.putNumber("lift int accumulator: ",m_liftModule.getExtendorRight().getIntegralAccumulator());
 }
 
     /************************************************************************************** */
@@ -86,15 +92,27 @@ public void periodic() {
         //if extendLow button = true, use constant to calculate the encoder position, then make the lift module go to said calculated position
         if (extendLow  && ( m_currentPOSofLift != extendPosition.low ) )
         {
+           m_clawSubsystem.intakeIn();
+          /* 
+         if (m_clawSubsystem.m_ClawModule.getTouchDetector().get() == false)
+         {
+            m_clawSubsystem.m_ClawModule.gettopRoller().set(ControlMode.PercentOutput, LiftConstants.kintakeSpeed);
+            m_clawSubsystem.m_ClawModule.getbottomRoller().set(ControlMode.PercentOutput, LiftConstants.kintakeSpeedBottom);
+         }
+         */
+
         // double currentPositionRight = m_liftModule.getExtendorRight().getSelectedSensorPosition(0);
           double targetPositionRotationsRight = (LiftConstants.LIFT_COUNTS_PER_INCH * LiftConstants.kExtendorPositionlow);
           SmartDashboard.putNumber("target Position", targetPositionRotationsRight);
           
           m_clawSubsystem.m_ClawModule.setClawSpeed(ClawConstants.kWristUpPOW);
-          m_liftModule.getconfigs().slot0.closedLoopPeakOutput = .8;
+         // m_liftModule.getconfigs().slot0.closedLoopPeakOutput = .8;
+         m_liftModule.getExtendorRight().configSetParameter(ParamEnum.eProfileParamSlot_PeakOutput, 0.8, 0, 0);
+         m_liftModule.getExtendorLeft().configSetParameter(ParamEnum.eProfileParamSlot_PeakOutput, 0.8, 0, 0);
 
-          m_liftModule.getExtendorRight().configAllSettings(m_liftModule.getconfigs());
-          m_liftModule.getExtendorLeft().configAllSettings(m_liftModule.getconfigs());
+
+       //   m_liftModule.getExtendorRight().configAllSettings(m_liftModule.getconfigs());
+       //   m_liftModule.getExtendorLeft().configAllSettings(m_liftModule.getconfigs());
 
           m_liftModule.getExtendorRight().set(ControlMode.Position, targetPositionRotationsRight);
           SmartDashboard.putString("ButtonPress", "ExtendLow");
@@ -106,15 +124,27 @@ public void periodic() {
         else if (extendMid  && ( m_currentPOSofLift != extendPosition.mid ))
         {
 
+          m_clawSubsystem.intakeIn();
+          /* 
+          if (m_clawSubsystem.m_ClawModule.getTouchDetector().get() == false)
+          {
+             m_clawSubsystem.m_ClawModule.gettopRoller().set(ControlMode.PercentOutput, LiftConstants.kintakeSpeed);
+             m_clawSubsystem.m_ClawModule.getbottomRoller().set(ControlMode.PercentOutput, LiftConstants.kintakeSpeedBottom);
+          }
+          */
+
         // double currentPositionRight = m_liftModule.getExtendorRight().getSelectedSensorPosition(0);
           double targetPositionRotationsRight = (LiftConstants.LIFT_COUNTS_PER_INCH * LiftConstants.kExtendorPositionmid);
           SmartDashboard.putNumber("target Position", targetPositionRotationsRight);
 
           m_clawSubsystem.m_ClawModule.setClawSpeed(ClawConstants.kWristUpPOW);
-          m_liftModule.getconfigs().slot0.closedLoopPeakOutput = .6;
+          //m_liftModule.getconfigs().slot0.closedLoopPeakOutput = .6;
 
-          m_liftModule.getExtendorRight().configAllSettings(m_liftModule.getconfigs());
-          m_liftModule.getExtendorLeft().configAllSettings(m_liftModule.getconfigs());
+          //m_liftModule.getExtendorRight().configAllSettings(m_liftModule.getconfigs());
+          //m_liftModule.getExtendorLeft().configAllSettings(m_liftModule.getconfigs());
+          m_liftModule.getExtendorRight().configSetParameter(ParamEnum.eProfileParamSlot_PeakOutput, 0.6, 0, 0);
+          m_liftModule.getExtendorLeft().configSetParameter(ParamEnum.eProfileParamSlot_PeakOutput, 0.6, 0, 0);
+ 
           
           m_liftModule.getExtendorRight().set(ControlMode.Position, targetPositionRotationsRight);
           SmartDashboard.putString("ButtonPress", "extendMid");
@@ -125,14 +155,23 @@ public void periodic() {
         //if extendHigh button = true, use constant to calculate the encoder position, then make the lift module go to said calculated position
         else if (extendHigh && ( m_currentPOSofLift != extendPosition.high ))
         {
+          m_clawSubsystem.intakeIn();
+/* 
+          if (m_clawSubsystem.m_ClawModule.getTouchDetector().get() == false)
+          {
+             m_clawSubsystem.m_ClawModule.gettopRoller().set(ControlMode.PercentOutput, LiftConstants.kintakeSpeed);
+             m_clawSubsystem.m_ClawModule.getbottomRoller().set(ControlMode.PercentOutput, LiftConstants.kintakeSpeedBottom);
+          }
+*/
           double targetPositionRotationsRight = (LiftConstants.LIFT_COUNTS_PER_INCH * LiftConstants.kExtendorPositionhigh);
           SmartDashboard.putNumber("target Position", targetPositionRotationsRight);
 
           m_clawSubsystem.m_ClawModule.setClawSpeed(1);
-          m_liftModule.getconfigs().slot0.closedLoopPeakOutput = .6;
+          //m_liftModule.getconfigs().slot0.closedLoopPeakOutput = .6;
 
-          m_liftModule.getExtendorRight().configAllSettings(m_liftModule.getconfigs());
-          m_liftModule.getExtendorLeft().configAllSettings(m_liftModule.getconfigs());
+          m_liftModule.getExtendorRight().configSetParameter(ParamEnum.eProfileParamSlot_PeakOutput, 0.6, 0, 0);
+          m_liftModule.getExtendorLeft().configSetParameter(ParamEnum.eProfileParamSlot_PeakOutput, 0.6, 0, 0);
+ 
           
           m_liftModule.getExtendorRight().set(ControlMode.Position, targetPositionRotationsRight);
           SmartDashboard.putString("ButtonPress", "extendHigh");
@@ -216,10 +255,11 @@ public void periodic() {
       SmartDashboard.putNumber("target Position", targetPositionRotationsRight);
 
       m_clawSubsystem.m_ClawModule.setClawSpeed(ClawConstants.kWristDownPOW);
-      m_liftModule.getconfigs().slot0.closedLoopPeakOutput = .6;
+    //  m_liftModule.getconfigs().slot0.closedLoopPeakOutput = .6;
 
-      m_liftModule.getExtendorRight().configAllSettings(m_liftModule.getconfigs());
-      m_liftModule.getExtendorLeft().configAllSettings(m_liftModule.getconfigs());
+      m_liftModule.getExtendorRight().configSetParameter(ParamEnum.eProfileParamSlot_PeakOutput, 0.6, 0, 0);
+         m_liftModule.getExtendorLeft().configSetParameter(ParamEnum.eProfileParamSlot_PeakOutput, 0.6, 0, 0);
+
       
       m_liftModule.getExtendorRight().set(ControlMode.Position, targetPositionRotationsRight);
       SmartDashboard.putString("ButtonPress", "extendRest");
@@ -234,44 +274,55 @@ public void periodic() {
       double targetPositionRotationsRight = (LiftConstants.LIFT_COUNTS_PER_INCH * LiftConstants.kExtendorPositionCone);
       SmartDashboard.putNumber("target Position", targetPositionRotationsRight);
 
-      m_liftModule.getExtendorRight().configAllSettings(m_liftModule.getconfigs());
-      m_liftModule.getExtendorLeft().configAllSettings(m_liftModule.getconfigs());
+      m_clawSubsystem.m_ClawModule.setClawSpeed(ClawConstants.kWristDownPOW);
+     // m_liftModule.getconfigs().slot0.closedLoopPeakOutput = .6;
+
+      m_liftModule.getExtendorRight().configSetParameter(ParamEnum.eProfileParamSlot_PeakOutput, 0.6, 0, 0);
+         m_liftModule.getExtendorLeft().configSetParameter(ParamEnum.eProfileParamSlot_PeakOutput, 0.6, 0, 0);
+
       
       m_liftModule.getExtendorRight().set(ControlMode.Position, targetPositionRotationsRight);
 
       m_currentPOSofLift = m_currentPOSofLift.intookCone;
     }
 
+    else if (Math.abs(m_currentLiftSpeed) > 0)
+    {
+      if (Math.abs(extendorSpeed) < 0.05)
+      {
+        m_liftModule.getExtendorRight().set(ControlMode.PercentOutput, 0);
+        m_currentLiftSpeed = 0;
+      }
+    }
     //makes sure the tipper goes back to its inactive position
-    else if (extendorSpeed > 0.05 || extendorSpeed < -0.05) 
+    else if (extendorSpeed > 0.15 || extendorSpeed < -0.15) 
     {
      // m_liftModule.getconeDeporter().set(false);
-      double liftYstick = -extendorSpeed;
+      m_currentLiftSpeed = -extendorSpeed;
       
       //takes joystick and limits the lift speed to 30%
-      if (liftYstick >= 0.3)
+      if (m_currentLiftSpeed >= 0.3)
       {
-        liftYstick = 0.3;
+        m_currentLiftSpeed = 0.3;
       }
 
       //detects if the lift is at the bottom limit switch, if it is not, it lets you continue moving the lift down
-      else if ((liftYstick <= -0.3)  && (m_liftModule.getLiftLimitSwitchLeft().get() == true) && (m_liftModule.getLiftLimitSwitchRight().get() == true))
+      else if ((m_currentLiftSpeed <= -0.3)  && (m_liftModule.getLiftLimitSwitchLeft().get() == true) && (m_liftModule.getLiftLimitSwitchRight().get() == true))
       {
-        liftYstick = -0.3;
+        m_currentLiftSpeed = -0.3;
       }
 
       //if it is at the limit, it sets the lift speed to 0 so it cannot continue moving downward and commit die
       else
       {
-        liftYstick = 0;
-        
+        m_currentLiftSpeed = 0;       
         
       }
 
       //applys power to the lift motors depending on the results of the if block above
 
 
-      m_liftModule.getExtendorRight().set(ControlMode.PercentOutput, liftYstick);
+      m_liftModule.getExtendorRight().set(ControlMode.PercentOutput, m_currentLiftSpeed);
       
     
     }
@@ -304,7 +355,7 @@ public void periodic() {
       m_clawSubsystem.m_ClawModule.getclawRotation().set(ControlMode.PercentOutput, 0);
       m_currentPOSofLift = m_currentPOSofLift.intake;
     }
-
+    m_clawSubsystem.setLiftState(m_currentPOSofLift);
   }
 
 

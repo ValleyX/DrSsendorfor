@@ -22,6 +22,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.WPIUtilJNI;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.ClawConstants;
@@ -33,6 +34,11 @@ import frc.utils.SwerveUtils;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ClawSubsystem extends SubsystemBase {
+
+  //make members
+  LiftConstants m_LiftConstants = new LiftConstants();
+  LiftSubsystem.extendPosition m_lifeExtendState;
+ // public double liftHeight = m_LiftConstants.kExtendorPositionlow;
 
   public enum intakestorage
   {
@@ -56,7 +62,7 @@ public final ClawModule m_ClawModule = new ClawModule(LiftConstants.kClawLeftID,
 public ClawSubsystem()
 {
   //SmartDashboard.putNumber("rollerSpeed", LiftConstants.kintakeSpeedBottom);
-
+  m_lifeExtendState = LiftSubsystem.extendPosition.intake;
 }
 
 //public RobotContainer m_RobotContainer = new RobotContainer();
@@ -96,7 +102,7 @@ public ClawSubsystem()
   }
 
 
-  public void ClawDrive(boolean intakein, boolean expell, boolean clawtoIntake, boolean clawtoExpell)  
+  public void ClawDrive(boolean intakein, boolean expell, boolean clawtoIntake, boolean clawtoExpell, boolean isBlock, double heightOfLiftCurrent)  
   {  
 
     
@@ -109,9 +115,18 @@ public ClawSubsystem()
     {
        intakeOut();
     }
+    
+    //the false here is backwards becuase it just is, it actually means that the button is pressed
+   // else if (isBlock == false && heightOfLiftCurrent < m_LiftConstants.kExtendorPositionlow && m_LiftConstants.kExtendorPositionCone < heightOfLiftCurrent) {
+     else if ( (m_lifeExtendState != extendPosition.intake) && (m_lifeExtendState != extendPosition.intookCone )) 
+     {
+      rollersInOnly();
 
-    else 
-    {
+     }
+     
+
+    //else if ( heightOfLiftCurrent < (m_LiftConstants.kExtendorPositionlow * LiftConstants.LIFT_COUNTS_PER_INCH))
+    else{
       intakeOff();
     }
 
@@ -126,6 +141,22 @@ public ClawSubsystem()
     }
 
     
+  }
+
+
+  //function to just run the rollers, made to hold cube in when needed
+  public void rollersInOnly() {
+
+
+    //keeps the rollers on at 20% power
+    m_ClawModule.gettopRoller().set(ControlMode.PercentOutput, LiftConstants.kintakeSpeed / 4);
+    m_ClawModule.getbottomRoller().set(ControlMode.PercentOutput, LiftConstants.kintakeSpeedBottom / 4);
+    
+
+    //turn claw motors off
+    m_ClawModule.getclawLeft().set(ControlMode.PercentOutput, 0.1);
+    m_ClawModule.getclawRight().set(ControlMode.PercentOutput, 0.1);
+
   }
    
     /************************************************************************************** */
@@ -214,6 +245,11 @@ public ClawSubsystem()
       m_ClawModule.getbottomRoller().set(ControlMode.PercentOutput, 0);
 
     }
+
+    public void setLiftState(LiftSubsystem.extendPosition state )
+    {
+      m_lifeExtendState = state;
+    }
   
     /************************************************************************************** */
     /*Rotates the claw depending on what height your lift is at     */
@@ -226,6 +262,10 @@ public ClawSubsystem()
         case intake:
          m_ClawModule.getclawRotation().set(ControlMode.Position, LiftConstants.kWristToIntakePOS);
         break;
+
+        case intookCone:
+        m_ClawModule.getclawRotation().set(ControlMode.Position, LiftConstants.kWristToIntakePOS);
+       break;
 
         case low:
           m_ClawModule.getclawRotation().set(ControlMode.Position, LiftConstants.kWristToScorePOSlow);

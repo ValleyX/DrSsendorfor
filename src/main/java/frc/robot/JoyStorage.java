@@ -40,8 +40,8 @@ public class JoyStorage implements Serializable {
         boolean buttonX,
         boolean buttonR3,
         boolean buttonL3,
-        boolean bumperLeftExpell,
         boolean bumperRightIntake,
+        boolean bumperLeftExpell,
         boolean buttonBack,
         boolean driverButtonL3,
         boolean driverButtonR3) {

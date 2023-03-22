@@ -63,9 +63,9 @@ public final class Constants {
      * if the bracket alligned wheel is facing forward write the number of the absolute value here
      * if the bracket allignedd wheel is facing left, write the number of the absolute value but minus PI/2 off
      */
-    public static final double kFrontLeftChassisAngularOffset = 1.600 - (Math.PI/2);
-    public static final double kFrontRightChassisAngularOffset = 4.260;
-    public static final double kBackLeftChassisAngularOffset = 3.145;
+    public static final double kFrontLeftChassisAngularOffset = 1.612 - (Math.PI/2); //1.600
+    public static final double kFrontRightChassisAngularOffset = 4.2685; 
+    public static final double kBackLeftChassisAngularOffset = 6.253139 - Math.PI; //3.145
     public static final double kBackRightChassisAngularOffset = 5.922 + (Math.PI/2);
 
 
@@ -186,6 +186,7 @@ public final class Constants {
 
     public static final double kExtendorPositionReset = 0;
     public static final double kExtendorPositionCone = 6;
+    //public static final double kExtendorPositionlow = 32; 
     public static final double kExtendorPositionlow = 32; 
     public static final double kExtendorPositionmid = 39.78; //65
     public static final double kExtendorPositionhigh = 58.66; //106
@@ -209,8 +210,12 @@ public final class Constants {
 
     public static final double kAllowableWristSwingPOS = 28 * LIFT_COUNTS_PER_INCH; // the number is in inches 
     // LIFT PID
-    public static final double kLIFTP = .009;//0.018;
+    //public static final double kLIFTP = .009;//0.018;
+    public static final double kLIFTP = .018;//0.018;
+   // public static final double kLIFTP = .1;
+    //public static final double kLIFTI = 0.000025;
     public static final double kLIFTI = 0.000025;
+    //public static final double kLIFTI = 0.0;
     public static final double kAllowableError = 50;
     public static final double LiftdownEnough = 1 * LIFT_COUNTS_PER_INCH;
 
@@ -248,7 +253,8 @@ public final class Constants {
     public static final double kGold = 0.67;
     public static final double kStrobeRed = -0.11;
     public static final double kBreathBlue = -0.15;
-    
+    public static final double kStrobeGold = -0.07; // indicating cone
+    public static final double kStrobeBlue = -0.09; // indicating cube
   }
 
   public static final class AutoConstants {
