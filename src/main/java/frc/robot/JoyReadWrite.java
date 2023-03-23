@@ -27,7 +27,9 @@ public class JoyReadWrite {
 
             // write object to file
             oos.writeObject(joyStorage);
+            oos.flush();
             oos.close();
+            fos.flush();
             fos.close();
 
         } catch (IOException ex) {

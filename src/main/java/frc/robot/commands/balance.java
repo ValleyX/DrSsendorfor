@@ -10,6 +10,8 @@ import frc.robot.subsystems.DriveSubsystem;
 
 public class balance extends CommandBase {
 
+  
+
     int time;
     int timeMoving;
     double speed;//makes the speed that you want to set to the motors
@@ -20,6 +22,9 @@ public class balance extends CommandBase {
     boolean m_bFirst = true;
 
     private final DriveSubsystem m_driveTrain;
+
+    private boolean m_InEndState;
+    private int m_EndCount;
  
     //subsystem constructor
     public balance(DriveSubsystem subsystem) {
@@ -38,6 +43,10 @@ public class balance extends CommandBase {
       parked = false;
       m_SlewPitch = new SlewRateLimiter(10);
 
+      m_InEndState = false;
+      m_EndCount = 0;
+      
+
       //m_driveTrain.m_gyro.setYaw(0);
       //initialPitch = m_driveTrain.m_gyro.getYaw();
     }
@@ -46,6 +55,8 @@ public class balance extends CommandBase {
     @Override
     public void execute() { 
 
+    //  m_driveTrain.setX(); 
+      /* 
       if (m_bFirst == true)
       {
         initialPitch = m_driveTrain.m_gyro.getRoll();
@@ -71,7 +82,7 @@ public class balance extends CommandBase {
         -MathUtil.applyDeadband(0, OIConstants.kDriveDeadband),
         false, false
       );
-      
+      */
     }
 
     // Called once the command ends or is interrupted.
@@ -82,11 +93,42 @@ public class balance extends CommandBase {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
+
+      if (m_InEndState == false)
+      {
+        m_driveTrain.setX();
+        m_InEndState = true;
+        m_EndCount = 0;
+        return false;
+      }
+
+     else if (m_InEndState)
+      {
+        m_EndCount++;
+        if (m_EndCount >= 200)
+        {
+          m_driveTrain.setX();
+           return true;
+        }
+        else
+        {
+          return false;
+        }
+
+      }
+      else
+      {
+        return false;
+      }
+      //return false;
+     
+      /* 
       //once you've set the X position, the robot is parked and the code stops                                                                                                           congrats
       if (parked == true)
         return true;
       else
         return false;
+        */
     }
 
     @Override

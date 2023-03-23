@@ -43,10 +43,10 @@ import java.util.List;
  * (including subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  private final SequentialCommandGroupPlaybackRecord m_SeqCmdPlaybackLeft;
-  private final SequentialCommandGroupPlaybackRecord m_SeqCmdPlaybackRight;
+  private final SequentialCommandGroupPlaybackRecord m_SeqCmdPlaybackOne;
+ // private final SequentialCommandGroupPlaybackRecord m_SeqCmdPlaybackRight;
   private final SequentialCommandGroupPlaybackBalance m_SeqCmdPlaybackBalance;
-  private final SequentialCommandGroupPlaybackRecord m_SeqCmdRecord;
+ // private final SequentialCommandGroupPlaybackRecord m_SeqCmdRecord;
  // private final SequentialCommandGroupPlaybackRecord m_SeqCmdRecordBalance;
 
   // The robot's subsystems
@@ -63,12 +63,12 @@ public class RobotContainer {
    */
   public RobotContainer() {
 
-    m_SeqCmdPlaybackLeft = new SequentialCommandGroupPlaybackRecord(DriveType.Playback, 15, "LeftRecord", m_robotDrive, m_liftSubsystem, m_ClawSubsystem);
-    m_SeqCmdPlaybackRight = new SequentialCommandGroupPlaybackRecord(DriveType.Playback, 15, "RightRecord", m_robotDrive, m_liftSubsystem, m_ClawSubsystem);
-    m_SeqCmdPlaybackBalance = new SequentialCommandGroupPlaybackBalance(DriveType.Playback, 13, "MiddleRecord", m_robotDrive, m_liftSubsystem, m_ClawSubsystem);
+    m_SeqCmdPlaybackOne = new SequentialCommandGroupPlaybackRecord(DriveType.Playback, 15, "LeftRecord", m_robotDrive, m_liftSubsystem, m_ClawSubsystem);
+    //m_SeqCmdPlaybackRight = new SequentialCommandGroupPlaybackRecord(DriveType.Playback, 15, "RightRecord", m_robotDrive, m_liftSubsystem, m_ClawSubsystem);
+    m_SeqCmdPlaybackBalance = new SequentialCommandGroupPlaybackBalance(DriveType.Playback, 12, "BalanceRecord", m_robotDrive, m_liftSubsystem, m_ClawSubsystem);
   
     //rename this between runs for specific type
-   m_SeqCmdRecord = new SequentialCommandGroupPlaybackRecord(DriveType.Record, 15, "LeftRecord", m_robotDrive, m_liftSubsystem, m_ClawSubsystem);
+   //m_SeqCmdRecord = new SequentialCommandGroupPlaybackRecord(DriveType.Record, 15, "OneRecord", m_robotDrive, m_liftSubsystem, m_ClawSubsystem);
   // m_SeqCmdRecordBalance = new SequentialCommandGroupPlaybackRecord(DriveType.Record, 13, "MiddleRecord", m_robotDrive, m_liftSubsystem);
  
 
@@ -109,12 +109,12 @@ public class RobotContainer {
     //experimental
     //Only runs this when in telop mode
     m_robotDrive.setDefaultCommand(new TelopCommand(DriveType.Telop, 0, "",  m_robotDrive, m_liftSubsystem, m_ClawSubsystem));
- // m_robotDrive.setDefaultCommand(new TelopCommand(DriveType.Record, 15, "LeftRecord",  m_robotDrive, m_liftSubsystem, m_ClawSubsystem));
+  //m_robotDrive.setDefaultCommand(new TelopCommand(DriveType.Record, 15, "BalanceRecord",  m_robotDrive, m_liftSubsystem, m_ClawSubsystem));
         
     
     //chooser run in auto mode
-    m_chooser.setDefaultOption("Left", m_SeqCmdPlaybackLeft);
-    m_chooser.addOption("Right",       m_SeqCmdPlaybackRight);
+    m_chooser.setDefaultOption("One", m_SeqCmdPlaybackOne);
+    //m_chooser.addOption("Right",       m_SeqCmdPlaybackRight);
     m_chooser.addOption("Balance",       m_SeqCmdPlaybackBalance);
    // m_chooser.addOption("Record Full 15 secs",  m_SeqCmdRecord);
     //m_chooser.addOption("Record 13 secs",  m_SeqCmdRecordBalance);

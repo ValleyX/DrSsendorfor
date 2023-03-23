@@ -255,6 +255,7 @@ public final class Constants {
     public static final double kBreathBlue = -0.15;
     public static final double kStrobeGold = -0.07; // indicating cone
     public static final double kStrobeBlue = -0.09; // indicating cube
+    public static final double kJosh = 0.93; // color white 
   }
 
   public static final class AutoConstants {

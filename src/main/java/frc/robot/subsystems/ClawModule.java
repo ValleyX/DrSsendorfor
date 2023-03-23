@@ -29,6 +29,7 @@ import frc.robot.Constants.LiftConstants;
 import frc.robot.Constants.ModuleConstants;
 import frc.robot.Constants.ColorConstants;
 
+import com.ctre.phoenix.ParamEnum;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -139,7 +140,7 @@ public class ClawModule extends SubsystemBase {
   {
     m_configs.primaryPID.selectedFeedbackSensor = FeedbackDevice.RemoteSensor0;
     m_configs.slot0.closedLoopPeakOutput = speed;  //reduce max speed to 80%
-    m_clawRotation.configAllSettings(m_configs);
+    m_clawRotation.configSetParameter(ParamEnum.eProfileParamSlot_PeakOutput, speed, 0, 0);
   }
 
   //returns the reference for the left claw motor

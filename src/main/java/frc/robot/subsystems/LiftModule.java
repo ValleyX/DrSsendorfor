@@ -29,6 +29,7 @@ import frc.robot.Constants.LiftConstants;
 import frc.robot.Constants.ModuleConstants;
 import frc.robot.Constants.ColorConstants;
 
+import com.ctre.phoenix.ParamEnum;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -46,6 +47,7 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 
 import com.ctre.phoenix.sensors.CANCoder;
+import com.fasterxml.jackson.databind.deser.impl.CreatorCandidate.Param;
 
 /************************************************************************************** */
 /*class for lift system and others related to it     */
@@ -100,11 +102,15 @@ public class LiftModule extends SubsystemBase {
    //m_extendorRight.getClosedLoopError();
   // m_extendorRight.setIntegralAccumulator(0);
   // m_configs.slot0.maxIntegralAccumulator
+/*
+    m_extendorRight.configSetParameter(ParamEnum.eProfileParamSlot_PeakOutput, 0.8, 0, 0);
+    m_extendorLeft.configSetParameter(ParamEnum.eProfileParamSlot_PeakOutput, 0.8, 0, 0);
+   */ 
+  
 
-    m_extendorRight.configAllSettings(m_configs);
-    m_extendorLeft.configAllSettings(m_configs);
-    
-   
+   //m_extendorLeft.configAllSettings(m_configs);
+   //m_extendorRight.configAllSettings(m_configs);
+
 
     m_extendorRight.setInverted(false);
     m_extendorLeft.setInverted(true);

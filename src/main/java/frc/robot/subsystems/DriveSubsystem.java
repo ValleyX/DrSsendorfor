@@ -93,10 +93,24 @@ public class DriveSubsystem extends SubsystemBase {
             m_rearRight.getPosition()
         });
 
+        /* 
         SmartDashboard.putNumber("FrontLeft Absolute", m_frontLeft.m_turningSparkMax.getAbsoluteEncoder(Type.kDutyCycle).getPosition()) ;   
         SmartDashboard.putNumber("FrontRight Absolute", m_frontRight.m_turningSparkMax.getAbsoluteEncoder(Type.kDutyCycle).getPosition()) ;   
         SmartDashboard.putNumber("BackLeft Absolute", m_rearLeft.m_turningSparkMax.getAbsoluteEncoder(Type.kDutyCycle).getPosition()) ;   
         SmartDashboard.putNumber("BackRight Absolute", m_rearRight.m_turningSparkMax.getAbsoluteEncoder(Type.kDutyCycle).getPosition()) ;   
+        *//* 
+        SmartDashboard.putNumber("FrontLeftTurn Voltage", m_frontLeft.m_turningSparkMax.getAppliedOutput()) ;   
+        SmartDashboard.putNumber("FrontRightTurn Voltage", m_frontLeft.m_turningSparkMax.getAppliedOutput()) ;   
+        SmartDashboard.putNumber("BackLeftTurn Voltage", m_frontLeft.m_turningSparkMax.getAppliedOutput()) ;   
+        SmartDashboard.putNumber("BackRightTurn Voltage",m_frontLeft.m_turningSparkMax.getAppliedOutput()) ;   
+        
+
+        SmartDashboard.putNumber("FrontLeftDrive Voltage", m_frontLeft.getDriveMotor().getMotorOutputVoltage()) ;   
+        SmartDashboard.putNumber("FrontRightDrive Voltage", m_frontRight.getDriveMotor().getMotorOutputVoltage()) ;   
+        SmartDashboard.putNumber("BackLeftDrive Voltage", m_rearLeft.getDriveMotor().getMotorOutputVoltage()) ;   
+        SmartDashboard.putNumber("BackRightDrive Voltage", m_rearRight.getDriveMotor().getMotorOutputVoltage()) ;   
+        
+         */      
         /* 
         SmartDashboard.putNumber("FrontLeft ", m_frontLeft.getPosition().) ;   
         SmartDashboard.putNumber("FrontRight ", m_frontRight.getPosition()) ;   

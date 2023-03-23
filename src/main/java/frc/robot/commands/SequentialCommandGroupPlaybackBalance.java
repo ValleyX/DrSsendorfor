@@ -34,7 +34,7 @@ public class SequentialCommandGroupPlaybackBalance extends SequentialCommandGrou
     addCommands(
      
 
-        //new TelopCommand(driveType, seconds, filename, driveTrain, liftsub, clawsub)
+        new TelopCommand(driveType, seconds, filename, driveTrain, liftsub, clawsub),
         //put banancing command call here
         new balance(driveTrain)
         );

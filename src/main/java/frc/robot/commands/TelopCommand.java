@@ -72,6 +72,9 @@ public class TelopCommand extends CommandBase {
     private SlewRateLimiter m_SlewX;
     private SlewRateLimiter m_SlewY;
 
+    private boolean m_InEndState;
+    private int m_EndCount;
+
 //this is the construcor for the teleop command class
 
     //int seconds and filename only used in record and playback scenarios
@@ -85,6 +88,8 @@ public class TelopCommand extends CommandBase {
     */
     public TelopCommand(DriveType drivetype, int seconds, String filename, DriveSubsystem subsystem, LiftSubsystem liftsub, ClawSubsystem clawsub) {
 
+    m_InEndState = false;
+    m_EndCount = 0;
     //creates manipulator and driver controlers
      m_driverController = new XboxController(OIConstants.kDriverControllerPort);
      m_manipulatorController = new XboxController(OIConstants.KManipulatorControllerPort);
@@ -246,8 +251,8 @@ public class TelopCommand extends CommandBase {
 
             bumperRightIntake = m_manipulatorController.getRightBumper();
             bumperLeftExpell = m_manipulatorController.getLeftBumper();
-            triggerLeftConeIndicator = m_driverController.getLeftTriggerAxis();
-            triggerRightCubeIndicator = m_driverController.getRightTriggerAxis();
+            triggerLeftConeIndicator = m_manipulatorController.getLeftTriggerAxis();
+            triggerRightCubeIndicator = m_manipulatorController.getRightTriggerAxis();
             //buttonR3Driver = m_driverController.getRightStickButton();
             //buttonL3Driver = m_driverController.getLeftStickButton();
 
@@ -263,7 +268,11 @@ public class TelopCommand extends CommandBase {
                 driveLeftXstick /= 2.5;
                 driveRightXstick /= 2.5;
 
-
+                double yaw = m_robotDrive.m_gyro.getYaw();
+                
+                //keep bot straight during record
+                driveRightXstick = yaw/20;
+                
                 m_joy[executeCount] =  new JoyStorage(driveLeftYstick, driveLeftXstick, driveRightXstick, manipulatorLeftYstick, 
                 buttonALOW, buttonBMID, buttonYHIGH, buttonXRESET,buttonR3ClawtoIntake,buttonL3CLawToScore, bumperRightIntake, 
                 bumperLeftExpell,buttonPnematicTipper, buttonL3Driver, buttonR3Driver);
@@ -297,6 +306,11 @@ public class TelopCommand extends CommandBase {
             buttonStartDriver = false;
             triggerLeftConeIndicator = 0;
             triggerRightCubeIndicator = 0;
+
+            double yaw = m_robotDrive.m_gyro.getYaw();
+                
+            //keep bot straight during record
+            driveRightXstick = yaw/20;
         }
 
         //to increment recording, make an index of when inputs are inputted
@@ -306,6 +320,8 @@ public class TelopCommand extends CommandBase {
         SmartDashboard.putNumber("executeCount", executeCount);
         SmartDashboard.putNumber("getLeftX", m_driverController.getLeftX());
         SmartDashboard.putNumber("getRightX", m_driverController.getRightX());
+        SmartDashboard.putNumber("getLeftY", m_driverController.getLeftY());
+
         SmartDashboard.putNumber("getYaw", m_robotDrive.getHeading());
         SmartDashboard.putNumber("getManipLeftY",manipulatorLeftYstick);
 /* 
@@ -354,9 +370,15 @@ public class TelopCommand extends CommandBase {
                 m_violetstrobeCounter++;
             }
 
+            else if ( m_violetstrobeCounter > 10 && m_violetstrobeCounter < 15)
+            {
+
+                m_ClawSubsystem.setBlinkinto(LightConstants.kJosh);
+                m_violetstrobeCounter++;
+            }
+
             else 
             {
-                m_ClawSubsystem.setBlinkinto(LightConstants.kBreathBlue);
                 m_violetstrobeCounter = 0;
             }
 
@@ -434,13 +456,14 @@ public class TelopCommand extends CommandBase {
     public boolean isFinished() {
           //executeCount++;
           if ((m_driveType != DriveType.Telop) && (executeCount >= (m_seconds / 0.02)))
-          {
-            return true;
+            {
+               return true;
           }
           else
           {
             return false;
           }
+          
     }
 
     @Override
