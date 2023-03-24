@@ -176,7 +176,7 @@ public final class Constants {
     public static final int kWristToIntakePOS = -10 * (4096/360); // counts to degrees 
     public static final double kWristToScorePOSlow = 52 * (4096/360);
     public static final double kWristToScorePOSmid = 150 * (4096/360) ;//118 * (4096/360);
-    public static final double kWristToScorePOShigh = 160 * (4096/360) ;//123 * (4096/360);
+    public static final double kWristToScorePOShigh = 150 * (4096/360) ;//123 * (4096/360);
     public static final double kWristTransitionToPOShigh = 160 * (4096/360); //for the intermittent stage to clear the second pole
 //for high to clear mid pole be 160
 //mid pole is 144
